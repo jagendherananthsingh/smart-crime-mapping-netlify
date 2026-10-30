@@ -5,77 +5,117 @@ import { sendSuccess, sendError } from '../utils/response';
 import { logAudit } from '../utils/audit';
 import { AuthRequest } from '../middleware/auth.middleware';
 
-const AP_LOCATIONS = [
-  { district: 'Visakhapatnam', city: 'Visakhapatnam', locationName: 'RK Beach Promenade', lat: 17.7142, lng: 83.3235, category: 'Theft', severity: 'LOW', type: 'Pickpocketing' },
-  { district: 'Visakhapatnam', city: 'Visakhapatnam', locationName: 'MVP Colony Sector 3', lat: 17.7388, lng: 83.3396, category: 'Burglary', severity: 'MEDIUM', type: 'Residential Burglary' },
-  { district: 'Visakhapatnam', city: 'Visakhapatnam', locationName: 'Gajuwaka Industrial Hub', lat: 17.6908, lng: 83.2114, category: 'Riots', severity: 'HIGH', type: 'Industrial Clash' },
-  { district: 'Visakhapatnam', city: 'Visakhapatnam', locationName: 'Dwaraka Nagar Complex', lat: 17.7285, lng: 83.3082, category: 'Cheatings', severity: 'MEDIUM', type: 'Commercial Fraud' },
-  { district: 'NTR (Vijayawada)', city: 'Vijayawada', locationName: 'Benz Circle Commercial Junction', lat: 16.5012, lng: 80.6510, category: 'Theft', severity: 'MEDIUM', type: 'Vehicle Theft' },
-  { district: 'NTR (Vijayawada)', city: 'Vijayawada', locationName: 'Governorpet Market Road', lat: 16.5123, lng: 80.6274, category: 'Robbery', severity: 'HIGH', type: 'Armed Snatching' },
-  { district: 'NTR (Vijayawada)', city: 'Vijayawada', locationName: 'Pandit Nehru Bus Station', lat: 16.5134, lng: 80.6198, category: 'Theft', severity: 'LOW', type: 'Baggage Theft' },
-  { district: 'NTR (Vijayawada)', city: 'Vijayawada', locationName: 'Auto Nagar Industrial Area', lat: 16.4950, lng: 80.6821, category: 'Burglary', severity: 'HIGH', type: 'Warehouse Break-in' },
-  { district: 'Guntur', city: 'Guntur', locationName: 'Brodipet 4th Line', lat: 16.3054, lng: 80.4412, category: 'Theft', severity: 'LOW', type: 'Two Wheeler Theft' },
-  { district: 'Guntur', city: 'Guntur', locationName: 'Arundelpet Market Zone', lat: 16.3120, lng: 80.4350, category: 'Molestation & Harassment', severity: 'MEDIUM', type: 'Street Harassment' },
-  { district: 'Guntur', city: 'Guntur', locationName: 'Old Bus Stand Transit Point', lat: 16.3015, lng: 80.4485, category: 'Cheatings', severity: 'LOW', type: 'Counterfeit Scam' },
-  { district: 'Tirupati', city: 'Tirupati', locationName: 'Alipiri Footpath Gate', lat: 13.6521, lng: 79.3985, category: 'Theft', severity: 'LOW', type: 'Pilgrim Luggage Theft' },
-  { district: 'Tirupati', city: 'Tirupati', locationName: 'Tirupati Central Station Area', lat: 13.6278, lng: 79.4215, category: 'Robbery', severity: 'HIGH', type: 'Chain Snatching' },
-  { district: 'Tirupati', city: 'Tirupati', locationName: 'Renigunta Junction', lat: 13.6492, lng: 79.5132, category: 'Burglary', severity: 'MEDIUM', type: 'Transit Theft' },
-  { district: 'Kurnool', city: 'Kurnool', locationName: 'Raj Vihar Circle', lat: 15.8281, lng: 78.0373, category: 'Riots', severity: 'HIGH', type: 'Public Disorder' },
-  { district: 'Kurnool', city: 'Kurnool', locationName: 'C-Camp Transit Corridor', lat: 15.8340, lng: 78.0450, category: 'Theft', severity: 'LOW', type: 'Property Theft' },
-  { district: 'SPS Nellore', city: 'Nellore', locationName: 'Trunk Road Commercial Axis', lat: 14.4426, lng: 79.9865, category: 'Cheatings', severity: 'MEDIUM', type: 'Online Financial Fraud' },
-  { district: 'SPS Nellore', city: 'Nellore', locationName: 'Magunta Layout', lat: 14.4312, lng: 79.9740, category: 'Burglary', severity: 'MEDIUM', type: 'House Trespass' },
-  { district: 'Kakinada', city: 'Kakinada', locationName: 'Bhanugudi Junction', lat: 16.9891, lng: 82.2475, category: 'Theft', severity: 'LOW', type: 'Mobile Snatching' },
-  { district: 'Kakinada', city: 'Kakinada', locationName: 'Kakinada Port Area', lat: 16.9642, lng: 82.2715, category: 'Dacoity', severity: 'CRITICAL', type: 'Cargo Hijack Attempt' },
-  { district: 'East Godavari', city: 'Rajamahendravaram', locationName: 'Kotipalli Bus Stand', lat: 17.0005, lng: 81.8040, category: 'Robbery', severity: 'HIGH', type: 'Night Robbery' },
-  { district: 'Anantapur', city: 'Anantapur', locationName: 'Subhash Road Clock Tower', lat: 14.6819, lng: 77.6006, category: 'Theft', severity: 'LOW', type: 'Shop Lifting' },
-  { district: 'YSR Kadapa', city: 'Kadapa', locationName: 'Seven Roads Circle', lat: 14.4673, lng: 78.8241, category: 'Burglary', severity: 'MEDIUM', type: 'Commercial Burglary' },
-  { district: 'Krishna', city: 'Machilipatnam', locationName: 'Koneru Center', lat: 16.1875, lng: 81.1389, category: 'Theft', severity: 'LOW', type: 'General Theft' },
-  { district: 'West Godavari', city: 'Bhimavaram', locationName: 'Somaram Temple Road', lat: 16.5449, lng: 81.5212, category: 'Cheatings', severity: 'LOW', type: 'Property Fraud' },
-  { district: 'Srikakulam', city: 'Srikakulam', locationName: 'Seven Road Junction', lat: 18.2969, lng: 83.8968, category: 'Theft', severity: 'LOW', type: 'Market Theft' },
-  { district: 'Vizianagaram', city: 'Vizianagaram', locationName: 'Fort Road Commercial Hub', lat: 18.1124, lng: 83.4072, category: 'Burglary', severity: 'MEDIUM', type: 'Shop Burglary' },
-  { district: 'Palnadu', city: 'Narasaraopet', locationName: 'Clock Tower Center', lat: 16.2359, lng: 80.0494, category: 'Riots', severity: 'HIGH', type: 'Faction Disruption' },
-  { district: 'Bapatla', city: 'Bapatla', locationName: 'Surya Lanka Road', lat: 15.9042, lng: 80.4682, category: 'Theft', severity: 'LOW', type: 'Beachfront Theft' },
-  { district: 'Nandyal', city: 'Nandyal', locationName: 'Sanjeeva Nagar Circle', lat: 15.4882, lng: 78.4836, category: 'Robbery', severity: 'HIGH', type: 'Highway Interception' },
-];
+const AP_DISTRICT_CENTERS: Record<string, { lat: number; lng: number; city: string; areas: string[] }> = {
+  'Visakhapatnam': { lat: 17.6868, lng: 83.2185, city: 'Visakhapatnam', areas: ['RK Beach Promenade', 'MVP Colony Sector 3', 'Gajuwaka Industrial Hub', 'Dwaraka Nagar Complex', 'Madhurawada IT SEZ', 'Rushikonda Beach Road', 'NAD Kotha Road'] },
+  'NTR (Vijayawada)': { lat: 16.5062, lng: 80.6480, city: 'Vijayawada', areas: ['Benz Circle Commercial Junction', 'Governorpet Market Road', 'Pandit Nehru Bus Station', 'Auto Nagar Industrial Area', 'MG Road Commercial Axis', 'Satyanarayanapuram', 'Bhavanipuram'] },
+  'Guntur': { lat: 16.3067, lng: 80.4365, city: 'Guntur', areas: ['Brodipet 4th Line', 'Arundelpet Market Zone', 'Old Bus Stand Transit Point', 'Lakshmipuram Main Road', 'Pattabhipuram', 'Koretipadu', 'Chilli Yard Commercial Hub'] },
+  'Tirupati': { lat: 13.6288, lng: 79.4192, city: 'Tirupati', areas: ['Alipiri Footpath Gate', 'Tirupati Central Station Area', 'Renigunta Junction', 'Tirumala Bypass Road', 'Bhavani Nagar', 'Chandragiri Road', 'Leela Mahal Circle'] },
+  'Kurnool': { lat: 15.8281, lng: 78.0373, city: 'Kurnool', areas: ['Raj Vihar Circle', 'C-Camp Transit Corridor', 'Kondareddy Buruju Chowk', 'Birla Gate Industrial Axis', 'Bellary Road Junction', 'Nandyal Checkpost', 'Mourya Inn Circle'] },
+  'SPS Nellore': { lat: 14.4426, lng: 79.9865, city: 'Nellore', areas: ['Trunk Road Commercial Axis', 'Magunta Layout', 'VRC Centre Commercial Area', 'Podalakur Road Corridor', 'Gandhi Nagar Junction', 'Dargamitta Road', 'Current Office Centre'] },
+  'Kakinada': { lat: 16.9891, lng: 82.2475, city: 'Kakinada', areas: ['Bhanugudi Junction', 'Kakinada Port Area', 'Main Road Commercial Strip', 'Suryaraopeta', 'Cinema Road', 'Jagannaickpur Bridge', 'Collector Office Road'] },
+  'East Godavari': { lat: 17.0005, lng: 81.8040, city: 'Rajamahendravaram', areas: ['Kotipalli Bus Stand', 'Pushkar Ghat Promenade', 'Danavaipeta Residential Hub', 'Morampudi Junction', 'Kambal Cheruvu', 'Main Bazar', 'Tadithota'] },
+  'Anantapur': { lat: 14.6819, lng: 77.6006, city: 'Anantapur', areas: ['Subhash Road Clock Tower', 'Sapthagiri Circle', 'RTC Bus Station Axis', 'Kalyandurg Road', 'Kamalanagar', 'Old Town Commercial Zone', 'Collectorate Circle'] },
+  'YSR Kadapa': { lat: 14.4673, lng: 78.8241, city: 'Kadapa', areas: ['Seven Roads Circle', 'Nagarajupalle Corridor', 'Old Bus Stand Axis', 'Yerramukkapalli', 'Rimi Market Hub', 'Palempalli Road', 'Collectorate Zone'] },
+  'Krishna': { lat: 16.1875, lng: 81.1389, city: 'Machilipatnam', areas: ['Koneru Center', 'Robertsonpet Commercial Axis', 'Chilakalapudi Junction', 'Bandar Port Road', 'Rustumbada', 'Gudivada High Road', 'Court Centre'] },
+  'West Godavari': { lat: 16.5449, lng: 81.5212, city: 'Bhimavaram', areas: ['Somaram Temple Road', 'PP Road Commercial Hub', 'Sunday Market Area', 'Bhimavaram Town Station', 'Mavullamma Temple Zone', 'Juvvalapalem Road', 'Bypass Junction'] },
+  'Srikakulam': { lat: 18.2969, lng: 83.8968, city: 'Srikakulam', areas: ['Seven Road Junction', 'Palakonda Road Corridor', 'Day & Night Junction', 'RTC Complex Area', 'Arasavalli Road', 'Gujarathipeta', 'Kalingapatnam Highway'] },
+  'Vizianagaram': { lat: 18.1124, lng: 83.4072, city: 'Vizianagaram', areas: ['Fort Road Commercial Hub', 'Mayuri Junction', 'Clock Tower Center', 'Balaji Nagar', 'RTC Complex Area', 'Kothapet Market', 'Cantonment Area'] },
+  'Palnadu': { lat: 16.2359, lng: 80.0494, city: 'Narasaraopet', areas: ['Clock Tower Center', 'Prakash Nagar', 'Vinukonda Road', 'RTC Bus Stand Zone', 'Arundelpet', 'Kotappakonda Road', 'Railway Station Road'] },
+  'Bapatla': { lat: 15.9042, lng: 80.4682, city: 'Bapatla', areas: ['Surya Lanka Road', 'Bapatla College Road', 'Old Bus Stand Zone', 'Railway Station Approach', 'GBC Road', 'Pedaravuru Road', 'Town Market'] },
+  'Nandyal': { lat: 15.4882, lng: 78.4836, city: 'Nandyal', areas: ['Sanjeeva Nagar Circle', 'Atmakur Bus Stand Area', 'Gandhi Chowk', 'Railway Station Road', 'Srinivasa Nagar', 'Tekke Market', 'Bypass Road'] },
+  'Chittoor': { lat: 13.2172, lng: 79.1003, city: 'Chittoor', areas: ['Greamspet Commercial Zone', 'Gandhi Statue Circle', 'MSR Bus Stand Axis', 'Kongareddypalli', 'Collectorate Road', 'Bazaar Street', 'High Church Road'] },
+  'Eluru': { lat: 16.7107, lng: 81.0952, city: 'Eluru', areas: ['Fire Station Center', 'Powerpet Station Road', 'Ramachandra Rao Pet', 'Old Bus Stand Corridor', 'Tangellamudi', 'Sanivarapupeta', 'Bypass Junction'] },
+  'Prakasam': { lat: 15.5057, lng: 80.0499, city: 'Ongole', areas: ['Church Center Commercial Hub', 'Collectorate Circle', 'Kurnool Road Axis', 'Lawyerpet Residential Area', 'Old Market', 'RTC Complex Area', 'Mangamur Road'] },
+  'Anakapalli': { lat: 17.6913, lng: 83.0039, city: 'Anakapalli', areas: ['Jaggery Market Axis', 'Four Roads Junction', 'Ring Road Corridor', 'RTC Complex', 'Railway Station Road', 'Gavarapalem', 'Main Bazaar'] },
+  'Annamayya': { lat: 14.0560, lng: 78.7520, city: 'Rayachoty', areas: ['Four Roads Circle', 'Kadapa Road Corridor', 'RTC Bus Stand Area', 'Madanapalle Road', 'Market Street', 'Hospital Road', 'Bypass Road'] },
+  'Sri Sathya Sai': { lat: 14.1672, lng: 77.8115, city: 'Puttaparthi', areas: ['Gopuram Road', 'Chitravathi Road', 'Ashram Perimeter', 'Main Market', 'Bypass Road', 'Super Specialty Hospital Zone', 'Bus Stand Circle'] },
+  'Dr.B.R.Ambedkar Konaseema': { lat: 16.5787, lng: 82.0061, city: 'Amalapuram', areas: ['Clock Tower Center', 'RTC Bus Complex', 'Kakinada Road', 'Market Street', 'Collectorate Area', 'High School Road', 'Bypass Axis'] },
+  'Parvathipuram Manyam': { lat: 18.7797, lng: 83.4276, city: 'Parvathipuram', areas: ['Old Bus Stand Road', 'Main Market Axis', 'Railway Colony', 'Court Road', 'Belgam Road', 'Collectorate Zone', 'Bypass Junction'] },
+  'Alluri Sitharama Raju': { lat: 18.0833, lng: 82.6667, city: 'Paderu', areas: ['Main Ghat Road Junction', 'Market Yard Paderu', 'Bus Stand Center', 'Hospital Road', 'Collectorate Perimeter', 'Araku Valley Road', 'Cinema Hall Road'] },
+};
+
+const CATEGORY_SPECS: Record<string, { severity: string; types: string[]; desc: string }> = {
+  'Theft': { severity: 'LOW', types: ['Two Wheeler Theft', 'Mobile Snatching', 'Pickpocketing', 'Baggage Theft', 'Shop Lifting'], desc: 'Reported property theft documented by beat patrol officers.' },
+  'Burglary': { severity: 'MEDIUM', types: ['Residential House Break-in', 'Commercial Shop Trespass', 'Night Burglary', 'Warehouse Break-in'], desc: 'Unlawful trespass and structural burglary incident.' },
+  'Robbery': { severity: 'HIGH', types: ['Armed Chain Snatching', 'Highway Robbery', 'Cash Transit Interception', 'Night Mugging'], desc: 'Armed intimidation and robbery complaint registered.' },
+  'Riots': { severity: 'HIGH', types: ['Public Disturbance', 'Unlawful Assembly', 'Commercial Zone Clash', 'Transit Disruption'], desc: 'Public disturbance and civil confrontation handled by patrol.' },
+  'Cheatings': { severity: 'MEDIUM', types: ['Online Financial Fraud', 'Counterfeit Scam', 'Property Document Fraud', 'Job Scam'], desc: 'Financial deception complaint registered under IPC Section 420.' },
+  'Molestation & Harassment': { severity: 'MEDIUM', types: ['Street Eve Teasing', 'Workplace Harassment', 'Stalking Complaint', 'Transit Harassment'], desc: 'Disha Women Special Intervention Unit complaint registered.' },
+  'Murder': { severity: 'CRITICAL', types: ['Fatal Assault', 'Homicide Investigation', 'Contract Murder Attempt', 'Faction Homicide'], desc: 'Critical homicide inquiry registered under IPC Section 302.' },
+  'Rape': { severity: 'CRITICAL', types: ['Sexual Assault Investigation', 'Aggravated Assault', 'POCSO Offense Inquiry'], desc: 'Special forensic inquiry conducted under magistrate supervision.' },
+  'Kidnapping (Women & Girls)': { severity: 'CRITICAL', types: ['Minor Abduction', 'Coerced Kidnapping', 'Transit Abduction'], desc: 'Emergency flash alert dispatched across highway checkposts.' },
+  'Kidnapping (Others)': { severity: 'HIGH', types: ['Ransom Abduction', 'Extortion Kidnapping', 'Business Dispute Kidnapping'], desc: 'Special investigation team assigned for victim extraction.' },
+  'Dowry Deaths': { severity: 'CRITICAL', types: ['Dowry Harassment Fatality', 'Domestic Homicide Investigation', 'Section 304B Case'], desc: 'Joint magistrate and DSP forensic inquest initiated.' },
+  'Dacoity': { severity: 'CRITICAL', types: ['Armed Gang Dacoity', 'Highway Hijack Gang', 'Inter-district Gang Dacoity'], desc: 'Organized criminal gang intercepted by armed police units.' },
+  'Other IPC Crimes': { severity: 'LOW', types: ['Negligent Driving', 'Public Nuisance', 'Defamation Case', 'Trespass Warning'], desc: 'Standard non-cognizable police station general diary entry.' },
+  'Other Crimes': { severity: 'LOW', types: ['Excise Infraction', 'Gaming Act Violation', 'Motor Vehicles Act Violation', 'Cigarettes & Tobacco Act Violation'], desc: 'Preventative policing enforcement and statutory infraction.' },
+};
 
 export const generateFallbackCrimes = (limit = 50, filters: any = {}): any[] => {
-  let list = AP_LOCATIONS;
+  const districtKeys = Object.keys(AP_DISTRICT_CENTERS);
+  let targetDistricts = districtKeys;
+
   if (filters.district && filters.district !== 'ALL') {
-    const dList = Array.isArray(filters.district) ? filters.district : [filters.district];
-    list = list.filter(l => dList.includes(l.district));
-    if (list.length === 0) list = AP_LOCATIONS;
+    const rawDist = Array.isArray(filters.district) ? filters.district[0] : filters.district;
+    const cleanDist = String(rawDist).trim().toLowerCase();
+    const matched = districtKeys.filter(
+      k => k.toLowerCase().includes(cleanDist) || cleanDist.includes(k.toLowerCase())
+    );
+    if (matched.length > 0) {
+      targetDistricts = matched;
+    }
   }
+
+  const categoryKeys = Object.keys(CATEGORY_SPECS);
+  let targetCategories = categoryKeys;
+
   if (filters.crimeCategory && filters.crimeCategory !== 'ALL') {
-    const filtered = list.filter(l => l.category === filters.crimeCategory);
-    if (filtered.length > 0) list = filtered;
+    const rawCat = String(filters.crimeCategory).trim().toLowerCase().replace(/s$/, '');
+    const matched = categoryKeys.filter(k => k.toLowerCase().replace(/s$/, '').includes(rawCat));
+    if (matched.length > 0) {
+      targetCategories = matched;
+    }
   }
 
   const results: any[] = [];
-  const baseDate = new Date();
+  const targetYear = Number(filters.year) || 2023;
+  const baseDate = new Date(targetYear, 10, 15, 12, 0, 0);
 
   for (let i = 0; i < limit; i++) {
-    const loc = list[i % list.length];
-    const itemDate = new Date(baseDate.getTime() - i * 3600 * 1000 * 14);
-    const hour = (18 + (i % 6)) % 24;
+    const distName = targetDistricts[i % targetDistricts.length];
+    const distInfo = AP_DISTRICT_CENTERS[distName] || AP_DISTRICT_CENTERS['Visakhapatnam'];
+    const catName = targetCategories[i % targetCategories.length];
+    const catSpec = CATEGORY_SPECS[catName] || CATEGORY_SPECS['Theft'];
+
+    const type = catSpec.types[i % catSpec.types.length];
+    const locationName = distInfo.areas[i % distInfo.areas.length];
+
+    // Distribute timestamps naturally within the year
+    const itemDate = new Date(baseDate.getTime() - i * 3600 * 1000 * 27);
+    const hour = (17 + (i % 7)) % 24;
+
+    // Natural jitter around the authentic district GPS center (~2-5 km spread)
+    const latJitter = (Math.sin(i * 1.7) * 0.022) + (Math.cos(i * 0.9) * 0.015);
+    const lngJitter = (Math.cos(i * 1.7) * 0.025) + (Math.sin(i * 0.9) * 0.018);
 
     results.push({
-      _id: `ap_crime_${i + 1}`,
-      caseId: `AP-${loc.district.substring(0, 3).toUpperCase()}-2024-${(1000 + i)}`,
+      _id: `ap_crime_${distName.substring(0, 3).toLowerCase()}_${i + 1}`,
+      caseId: `AP-${distName.substring(0, 3).toUpperCase()}-${targetYear}-${10000 + i}`,
       date: itemDate.toISOString(),
       year: itemDate.getFullYear(),
       month: itemDate.getMonth() + 1,
       day: itemDate.getDate(),
       dayOfWeek: itemDate.getDay(),
       hour,
-      crimeCategory: loc.category,
-      crimeType: loc.type,
-      locationName: loc.locationName,
-      latitude: loc.lat + (Math.sin(i) * 0.008),
-      longitude: loc.lng + (Math.cos(i) * 0.008),
-      district: loc.district,
-      city: loc.city,
-      description: `Reported incident of ${loc.type} documented by AP local jurisdiction law enforcement.`,
-      severity: loc.severity,
+      crimeCategory: catName,
+      crimeType: type,
+      locationName: `${locationName}, ${distInfo.city}`,
+      latitude: Number((distInfo.lat + latJitter).toFixed(6)),
+      longitude: Number((distInfo.lng + lngJitter).toFixed(6)),
+      district: distName,
+      city: distInfo.city,
+      description: `${catSpec.desc} Registered at ${locationName} station beat.`,
+      severity: filters.severity && filters.severity !== 'ALL' ? filters.severity : catSpec.severity,
       state: 'Andhra Pradesh',
     });
   }
@@ -160,9 +200,9 @@ export class CrimeController {
       const { isDbConnected } = require('../config/database');
       if (isDbConnected()) {
         const [districts, categories, years] = await Promise.all([
-          CrimeRecord.distinct('district', { state: 'Andhra Pradesh' }),
-          CrimeRecord.distinct('crimeCategory', { state: 'Andhra Pradesh' }),
-          CrimeRecord.distinct('year', { state: 'Andhra Pradesh' }),
+          CrimeRecord.distinct('district'),
+          CrimeRecord.distinct('crimeCategory'),
+          CrimeRecord.distinct('year'),
         ]);
 
         if (districts.length > 0) {

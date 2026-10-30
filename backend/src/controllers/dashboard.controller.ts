@@ -22,29 +22,54 @@ export class DashboardController {
       throw new Error('Database offline or buffering');
     } catch (error: any) {
       const selectedDistrict = req.query.district ? String(req.query.district) : undefined;
+      const selectedCategory = req.query.crimeCategory ? String(req.query.crimeCategory) : undefined;
       const dm = getDistrictMetrics(selectedDistrict);
       const isFiltered = Boolean(selectedDistrict && selectedDistrict !== 'ALL');
 
-      const specificCat = dm.categories.find(c => c.category !== 'Other Crimes' && c.category !== 'Other IPC Crimes');
-      const topCat = specificCat ? specificCat.category : dm.topCategory;
-      const topCatCount = specificCat ? specificCat.count : dm.topCategoryCount;
-      const topCatPct = dm.totalRecords > 0 ? Number(((topCatCount / dm.totalRecords) * 100).toFixed(1)) : 0;
+      let totalRecords = dm.totalRecords;
+      let topCat = dm.topCategory;
+      let topCatCount = dm.topCategoryCount;
+      let topCatPct = dm.topCategoryPercentage;
+      let severityBreakdown = dm.severityBreakdown;
+
+      if (selectedCategory && selectedCategory !== 'ALL') {
+        const found = dm.categories.find(
+          (c) => c.category.toLowerCase().replace(/s$/, '') === selectedCategory.toLowerCase().replace(/s$/, '')
+        );
+        if (found) {
+          totalRecords = found.count;
+          topCat = found.category;
+          topCatCount = found.count;
+          topCatPct = 100;
+          const ratio = dm.totalRecords > 0 ? found.count / dm.totalRecords : 1;
+          severityBreakdown = dm.severityBreakdown.map((s) => ({
+            severity: s.severity,
+            count: Math.max(1, Math.round(s.count * ratio)),
+          }));
+        }
+      } else {
+        const specificCat = dm.categories.find((c) => c.category !== 'Other Crimes' && c.category !== 'Other IPC Crimes');
+        topCat = specificCat ? specificCat.category : dm.topCategory;
+        topCatCount = specificCat ? specificCat.count : dm.topCategoryCount;
+        topCatPct = dm.totalRecords > 0 ? Number(((topCatCount / dm.totalRecords) * 100).toFixed(1)) : 0;
+      }
 
       sendSuccess(
         res,
         {
-          totalRecords: dm.totalRecords,
-          totalCategories: dm.categories.length,
+          totalRecords,
+          totalCategories: selectedCategory && selectedCategory !== 'ALL' ? 1 : dm.categories.length,
           topCategory: topCat,
           topCategoryCount: topCatCount,
           topCategoryPercentage: topCatPct,
           topDistrict: isFiltered ? dm.district : (dm.topDistrict || 'Guntur'),
-          topDistrictCount: isFiltered ? dm.totalRecords : (dm.topDistrictCount || dm.totalRecords),
-          recordsThisMonth: Math.round(dm.totalRecords * 0.025),
+          topDistrictCount: isFiltered ? totalRecords : (dm.topDistrictCount || totalRecords),
+          recordsThisMonth: Math.round(totalRecords * 0.025),
           datasetCount: 1,
-          severityBreakdown: dm.severityBreakdown,
+          severityBreakdown,
           safetyRatio: dm.safetyRatio,
           district: isFiltered ? dm.district : undefined,
+          crimeCategory: selectedCategory && selectedCategory !== 'ALL' ? selectedCategory : undefined,
         },
         'Dashboard summary retrieved (Cloud Resilient Mode)'
       );
@@ -64,9 +89,19 @@ export class DashboardController {
       throw new Error('Database offline or buffering');
     } catch (error: any) {
       const selectedDistrict = req.query.district ? String(req.query.district) : undefined;
+      const selectedCategory = req.query.crimeCategory ? String(req.query.crimeCategory) : undefined;
       const dm = getDistrictMetrics(selectedDistrict);
       const year = Number(req.query.year) || 2023;
-      const totalYearly = dm.yearly[year] || Math.round(dm.totalRecords / 3);
+      let totalYearly = dm.yearly[year] || Math.round(dm.totalRecords / 3);
+
+      if (selectedCategory && selectedCategory !== 'ALL') {
+        const found = dm.categories.find(
+          (c) => c.category.toLowerCase().replace(/s$/, '') === selectedCategory.toLowerCase().replace(/s$/, '')
+        );
+        if (found && dm.totalRecords > 0) {
+          totalYearly = Math.max(1, Math.round(totalYearly * (found.count / dm.totalRecords)));
+        }
+      }
 
       const monthWeights = [0.082, 0.076, 0.085, 0.081, 0.091, 0.087, 0.084, 0.082, 0.079, 0.089, 0.073, 0.071];
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

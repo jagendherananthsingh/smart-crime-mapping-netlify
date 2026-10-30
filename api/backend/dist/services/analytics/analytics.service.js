@@ -3,6 +3,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnalyticsService = void 0;
 const CrimeRecord_1 = require("../../models/CrimeRecord");
 const Dataset_1 = require("../../models/Dataset");
+const DB_DISTRICT_ALIASES = {
+    'tirupati': ['Tirupathi', 'Tirupati'],
+    'tirupathi': ['Tirupathi', 'Tirupati'],
+    'anantapur': ['Ananthapuramu', 'Anantapur', 'Ananthpuramu'],
+    'ananthapuramu': ['Ananthapuramu', 'Anantapur', 'Ananthpuramu'],
+    'ntr': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
+    'ntr (vijayawada)': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
+    'vijayawada': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
+    'ysr': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
+    'ysr kadapa': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
+    'kadapa': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
+    'sps nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
+    'nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
+    's.p.s.r nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
+    'konaseema': ['Dr.B.R.Ambedkar Konaseema', 'Konaseema'],
+    'dr.b.r.ambedkar konaseema': ['Dr.B.R.Ambedkar Konaseema', 'Konaseema'],
+    'visakhapatnam': ['Visakhapatnam', 'Vishakapatnam'],
+    'vishakapatnam': ['Visakhapatnam', 'Vishakapatnam'],
+    'guntur': ['Guntur', 'Guntur(U)', 'Guntur(R)'],
+    'east godavari': ['East Godavari', 'Rajamahendravaram'],
+    'rajamahendravaram': ['East Godavari', 'Rajamahendravaram'],
+    'kurnool': ['Kurnool', 'Guntakal Railway'],
+    'krishna': ['Krishna', 'Vijayawada Railway'],
+    'chittoor': ['Chittoor'],
+    'kakinada': ['Kakinada'],
+    'nandyal': ['Nandyal'],
+    'palnadu': ['Palnadu'],
+    'bapatla': ['Bapatla'],
+    'eluru': ['Eluru'],
+    'prakasam': ['Prakasam'],
+    'srikakulam': ['Srikakulam'],
+    'vizianagaram': ['Vizianagaram'],
+    'west godavari': ['West Godavari'],
+    'annamayya': ['Annamayya'],
+    'anakapalli': ['Anakapalli'],
+    'sri sathya sai': ['Sri Sathya Sai'],
+    'alluri sitharama raju': ['Alluri Sitharama Raju'],
+    'parvathipuram manyam': ['Parvathipuram Manyam'],
+};
 class AnalyticsService {
     static cache = new Map();
     static CACHE_TTL = 5 * 60 * 1000;
@@ -15,7 +54,7 @@ class AnalyticsService {
         return data;
     }
     /**
-     * Build MongoDB match stage from filter options
+     * Build MongoDB match stage from filter options with robust alias resolution
      */
     static buildMatchQuery(filters) {
         const query = {};
@@ -31,21 +70,34 @@ class AnalyticsService {
         if (filters.month)
             query.month = Number(filters.month);
         if (filters.crimeCategory && filters.crimeCategory !== 'ALL') {
-            query.crimeCategory = filters.crimeCategory;
+            const catTrim = String(filters.crimeCategory).trim();
+            const baseName = catTrim.replace(/s$/i, '');
+            query.crimeCategory = { $regex: new RegExp(`^${baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
         }
         if (filters.district && filters.district !== 'ALL') {
-            if (Array.isArray(filters.district)) {
-                query.district = { $in: filters.district };
+            const dItems = Array.isArray(filters.district) ? filters.district : [filters.district];
+            const allAliases = new Set();
+            for (const d of dItems) {
+                if (!d || d === 'ALL')
+                    continue;
+                const key = String(d).trim().toLowerCase();
+                const aliases = DB_DISTRICT_ALIASES[key] || [String(d).trim()];
+                aliases.forEach((a) => allAliases.add(a));
+                allAliases.add(String(d).trim());
             }
-            else {
-                query.district = filters.district;
+            const aliasArray = Array.from(allAliases).filter(Boolean);
+            if (aliasArray.length === 1) {
+                query.district = { $regex: new RegExp(`^${aliasArray[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
+            }
+            else if (aliasArray.length > 1) {
+                query.district = { $in: aliasArray.map((a) => new RegExp(`^${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i')) };
             }
         }
         if (filters.city && filters.city !== 'ALL') {
-            query.city = filters.city;
+            query.city = { $regex: new RegExp(`^${String(filters.city).trim()}`, 'i') };
         }
         if (filters.severity && filters.severity !== 'ALL') {
-            query.severity = filters.severity;
+            query.severity = String(filters.severity).toUpperCase();
         }
         if (filters.search) {
             query.$or = [

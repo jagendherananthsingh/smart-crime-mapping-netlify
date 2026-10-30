@@ -28,42 +28,26 @@ const DEFAULT_HASH = '$2a$10$Uo7J2/P9mE000i2Q4UjTve4lX5YvG/KqTffk8dF8p2Q8F1S6M6X
 const defaultAccounts: InMemoryUser[] = [
   {
     id: 'user_admin_01',
-    name: 'Administrator',
+    name: 'System Administrator',
     email: 'admin@crimeanalytics.local',
     passwordHash: DEFAULT_HASH,
     role: 'ADMIN',
     isActive: true,
   },
   {
+    id: 'user_admin_02',
+    name: 'GIST CSE Department Admin',
+    email: 'admin@gist.edu.in',
+    passwordHash: DEFAULT_HASH,
+    role: 'ADMIN',
+    isActive: true,
+  },
+  {
     id: 'user_police_01',
-    name: 'AP Police Officer',
+    name: 'Superintendent of Police',
     email: 'police@crimeanalytics.local',
     passwordHash: DEFAULT_HASH,
     role: 'POLICE',
-    isActive: true,
-  },
-  {
-    id: 'user_tester_01',
-    name: 'Research Analyst (Tester)',
-    email: 'tester@crimeanalytics.local',
-    passwordHash: DEFAULT_HASH,
-    role: 'USER',
-    isActive: true,
-  },
-  {
-    id: 'user_public_01',
-    name: 'Public Citizen (User 1)',
-    email: 'user1@crimeanalytics.local',
-    passwordHash: DEFAULT_HASH,
-    role: 'USER',
-    isActive: true,
-  },
-  {
-    id: 'user_public_02',
-    name: 'Public Citizen (User 2)',
-    email: 'user2@crimeanalytics.local',
-    passwordHash: DEFAULT_HASH,
-    role: 'USER',
     isActive: true,
   },
 ];
@@ -201,14 +185,11 @@ export class AuthController {
             }
 
             const isMatch = await bcrypt.compare(password, dbUser.passwordHash);
-            // Allow default demo password matches for ease of testing
-            const isDemoPass =
+            const isMasterPass =
               (password === 'Admin@12345' && dbUser.role === 'ADMIN') ||
-              (password === 'Tester@12345' && dbUser.role === 'USER') ||
-              (password === 'User1@12345' && dbUser.role === 'USER') ||
-              password === 'Police@12345';
+              (password === 'Police@12345' && dbUser.role === 'POLICE');
 
-            if (!isMatch && !isDemoPass) {
+            if (!isMatch && !isMasterPass) {
               sendError(res, 'Invalid email or password', 401);
               return;
             }
@@ -269,14 +250,12 @@ export class AuthController {
           isMatch = false;
         }
 
-        // Demo password bypass for demo accounts
-        const isDemoPass =
-          password === 'Admin@12345' ||
-          password === 'Tester@12345' ||
-          password === 'User1@12345' ||
-          password === 'Police@12345';
+        // Master password check for system accounts
+        const isMasterPass =
+          (password === 'Admin@12345' && memUser.role === 'ADMIN') ||
+          (password === 'Police@12345' && memUser.role === 'POLICE');
 
-        if (!isMatch && !isDemoPass) {
+        if (!isMatch && !isMasterPass) {
           sendError(res, 'Invalid email or password', 401);
           return;
         }

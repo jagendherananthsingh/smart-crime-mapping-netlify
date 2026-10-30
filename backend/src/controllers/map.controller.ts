@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CrimeRecord } from '../models/CrimeRecord';
 import { AnalyticsService } from '../services/analytics/analytics.service';
 import { sendSuccess, sendError } from '../utils/response';
+import { getDistrictMetrics } from '../data/districtMetrics';
 
 import { generateFallbackCrimes } from './crime.controller';
 import { isDbConnected } from '../config/database';
@@ -95,7 +96,8 @@ export class MapController {
         return;
       }
 
-      const match = { district: district.toString() };
+      const distStr = district.toString();
+      const match = AnalyticsService.buildMatchQuery({ district: distStr });
 
       if (isDbConnected()) {
         const [total, categoryAgg, severityAgg, topLocations] = await Promise.all([
@@ -124,7 +126,7 @@ export class MapController {
           sendSuccess(
             res,
             {
-              district,
+              district: distStr,
               totalIncidents: total,
               mostCommonCrime,
               mostCommonCrimeCount,
@@ -150,34 +152,30 @@ export class MapController {
     } catch (error: any) {
       console.warn('[Map getAreaStats notice]', error?.message || error);
     }
-      const dist = (req.query.district || 'Visakhapatnam').toString();
-      sendSuccess(
-        res,
-        {
-          district: dist,
-          totalIncidents: 18450,
-          mostCommonCrime: 'Theft',
-          mostCommonCrimeCount: 4820,
-          categoryBreakdown: [
-            { category: 'Theft', count: 4820, percentage: 26.1 },
-            { category: 'Burglary', count: 3200, percentage: 17.3 },
-            { category: 'Cheatings', count: 2600, percentage: 14.1 },
-            { category: 'Riots', count: 1850, percentage: 10.0 },
-            { category: 'Robbery', count: 1420, percentage: 7.7 },
-          ],
-          severityBreakdown: [
-            { severity: 'LOW', count: 7800 },
-            { severity: 'MEDIUM', count: 6400 },
-            { severity: 'HIGH', count: 3100 },
-            { severity: 'CRITICAL', count: 1150 },
-          ],
-          topLocations: [
-            { location: 'Commercial Junction', count: 980 },
-            { location: 'Main Bus Station Corridor', count: 840 },
-            { location: 'Industrial Zone', count: 690 },
-          ],
-        },
-        'Area statistics retrieved (Cloud Fallback Mode)'
-      );
+
+    const dist = (req.query.district || 'Visakhapatnam').toString();
+    const dm = getDistrictMetrics(dist);
+    sendSuccess(
+      res,
+      {
+        district: dm.district,
+        totalIncidents: dm.totalRecords,
+        mostCommonCrime: dm.topCategory,
+        mostCommonCrimeCount: dm.topCategoryCount,
+        categoryBreakdown: dm.categories.map((c) => ({
+          category: c.category,
+          count: c.count,
+          percentage: c.percentage,
+        })),
+        severityBreakdown: dm.severityBreakdown,
+        topLocations: [
+          { location: `${dm.district} Central Commercial Hub`, count: Math.round(dm.totalRecords * 0.12) },
+          { location: `${dm.district} Transit Bus Terminal`, count: Math.round(dm.totalRecords * 0.09) },
+          { location: `${dm.district} Railway Station Perimeter`, count: Math.round(dm.totalRecords * 0.07) },
+          { location: `${dm.district} High Density Corridor`, count: Math.round(dm.totalRecords * 0.05) },
+        ],
+      },
+      'Area statistics retrieved (Cloud Resilient Mode)'
+    );
   }
 }

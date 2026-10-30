@@ -66,45 +66,6 @@ export const Login: React.FC = () => {
               </div>
             )}
 
-            {/* Quick Demo Account Selector */}
-            <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-              <p className="text-[11px] font-semibold text-slate-400 mb-2 uppercase tracking-wider text-center">
-                Select Account Role to Sign In:
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('admin@crimeanalytics.local');
-                    setPassword('Admin@12345');
-                  }}
-                  className="px-2 py-1.5 rounded-lg bg-indigo-950/50 hover:bg-indigo-900/70 border border-indigo-700/50 text-[11px] font-semibold text-indigo-300 transition text-center cursor-pointer"
-                >
-                  🛡️ Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('police@crimeanalytics.local');
-                    setPassword('Police@12345');
-                  }}
-                  className="px-2 py-1.5 rounded-lg bg-emerald-950/50 hover:bg-emerald-900/70 border border-emerald-700/50 text-[11px] font-semibold text-emerald-300 transition text-center cursor-pointer"
-                >
-                  🚔 Police
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('user1@crimeanalytics.local');
-                    setPassword('User1@12345');
-                  }}
-                  className="px-2 py-1.5 rounded-lg bg-cyan-950/50 hover:bg-cyan-900/70 border border-cyan-700/50 text-[11px] font-semibold text-cyan-300 transition text-center cursor-pointer"
-                >
-                  👤 Citizen
-                </button>
-              </div>
-            </div>
-
             <div>
               <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
                 Email Address
