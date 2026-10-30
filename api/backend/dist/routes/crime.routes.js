@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const crime_controller_1 = require("../controllers/crime.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const crime_validator_1 = require("../validators/crime.validator");
+const router = (0, express_1.Router)();
+router.get('/', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, (0, validate_middleware_1.validateQuery)(crime_validator_1.crimeQuerySchema), crime_controller_1.CrimeController.getCrimes);
+router.get('/filter-options', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, crime_controller_1.CrimeController.getFilterOptions);
+router.get('/:id', auth_middleware_1.authenticate, crime_controller_1.CrimeController.getCrimeById);
+router.post('/', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), (0, validate_middleware_1.validateBody)(crime_validator_1.createCrimeRecordSchema), crime_controller_1.CrimeController.createCrime);
+router.put('/:id', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), crime_controller_1.CrimeController.updateCrime);
+router.delete('/:id', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), crime_controller_1.CrimeController.deleteCrime);
+exports.default = router;

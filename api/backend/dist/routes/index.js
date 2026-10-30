@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_routes_1 = __importDefault(require("./auth.routes"));
+const dashboard_routes_1 = __importDefault(require("./dashboard.routes"));
+const crime_routes_1 = __importDefault(require("./crime.routes"));
+const analytics_routes_1 = __importDefault(require("./analytics.routes"));
+const map_routes_1 = __importDefault(require("./map.routes"));
+const dataset_routes_1 = __importDefault(require("./dataset.routes"));
+const ml_routes_1 = __importDefault(require("./ml.routes"));
+const report_routes_1 = __importDefault(require("./report.routes"));
+const admin_routes_1 = __importDefault(require("./admin.routes"));
+const dataRequest_routes_1 = __importDefault(require("./dataRequest.routes"));
+const router = (0, express_1.Router)();
+router.use('/auth', auth_routes_1.default);
+router.use('/dashboard', dashboard_routes_1.default);
+router.use('/crimes', crime_routes_1.default);
+router.use('/analytics', analytics_routes_1.default);
+router.use('/map', map_routes_1.default);
+router.use('/datasets', dataset_routes_1.default);
+router.use('/ml', ml_routes_1.default);
+router.use('/reports', report_routes_1.default);
+router.use('/admin', admin_routes_1.default);
+router.use('/data-requests', dataRequest_routes_1.default);
+exports.default = router;

@@ -9,11 +9,19 @@ lerna-debug.log*
 
 # Node modules & Dependencies
 node_modules
-dist
+/dist
+/frontend/dist
+/backend/dist
 dist-ssr
 *.local
 
-# Environment variables (Primary .env files committed for zero-setup Vercel deployment)
+# Allow Netlify and API serverless function distributions
+!netlify/functions/backend/dist
+!netlify/functions/backend/dist/**
+!api/backend/dist
+!api/backend/dist/**
+
+# Environment variables (Primary .env files committed for zero-setup Netlify deployment)
 !.env
 !backend/.env
 !frontend/.env
@@ -33,7 +41,8 @@ dist-ssr
 *.sw?
 Thumbs.db
 
-# Vercel & Build caches
+# Netlify, Vercel & Build caches
+.netlify
 .vercel
 .cache
 .turbo

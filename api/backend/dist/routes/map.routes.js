@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const map_controller_1 = require("../controllers/map.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.get('/markers', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), map_controller_1.MapController.getMarkers);
+router.get('/heatmap', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), map_controller_1.MapController.getHeatmap);
+router.get('/area-stats', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), map_controller_1.MapController.getAreaStats);
+exports.default = router;

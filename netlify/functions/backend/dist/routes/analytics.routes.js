@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const analytics_controller_1 = require("../controllers/analytics.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.get('/temporal', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.getTemporal);
+router.get('/geographic', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.getGeographic);
+router.get('/categories', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.getCategories);
+router.get('/severity', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.getSeverity);
+router.get('/hotspots', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.getHotspots);
+router.get('/compare', auth_middleware_1.authenticate, auth_middleware_1.applyDataScope, analytics_controller_1.AnalyticsController.compare);
+exports.default = router;

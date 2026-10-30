@@ -15,6 +15,10 @@ export const env = {
   MONGODB_URI: process.env.MONGODB_URI || PRIMARY_MONGODB_URI,
   JWT_SECRET: process.env.JWT_SECRET || PRIMARY_JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
-  CLIENT_URL: process.env.CLIENT_URL || 'https://smart-crime-mapping.vercel.app',
+  CLIENT_URL:
+    process.env.CLIENT_URL ||
+    process.env.URL ||
+    process.env.DEPLOY_PRIME_URL ||
+    'https://smart-crime-mapping.netlify.app',
 };
 

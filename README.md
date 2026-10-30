@@ -74,9 +74,21 @@ smart-crime-mapping/
 │   └── sample-crime-data.csv     # Synthetic multi-district historical dataset (1,000+ records)
 │
 ├── docker-compose.yml
+├── netlify.toml              # Netlify build, serverless functions & edge routing configuration
+├── NETLIFY_DEPLOYMENT_GUIDE.md # Netlify 1-click & GitHub deployment walkthrough
 ├── .env.example
 └── README.md
 ```
+
+---
+
+## ⚡ Netlify Cloud Serverless Deployment
+
+This platform is configured for **simultaneous fullstack deployment on Netlify**:
+- **Frontend SPA**: React 18 + Vite builds to `dist/` with edge redirects (`/* -> /index.html 200`).
+- **Serverless REST API**: Express backend runs as a high-performance Netlify Function (`netlify/functions/api.js`).
+- **Edge Routing**: `/api/*` automatically proxies to `/.netlify/functions/api/:splat` under the same domain.
+- For complete instructions, see the **[Netlify Deployment Guide](./NETLIFY_DEPLOYMENT_GUIDE.md)**.
 
 ---
 

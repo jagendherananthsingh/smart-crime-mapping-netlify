@@ -18,8 +18,6 @@ let connectionPromise: Promise<string> | null = null;
 export const isDbConnected = (): boolean => mongoose.connection.readyState === 1;
 
 export const connectDatabase = async (): Promise<string> => {
-  // Disable command buffering globally so queries don't hang when DB is offline
-  mongoose.set('bufferCommands', false);
   mongoose.set('strictQuery', true);
 
   // If already connected, return cached connection (essential for Vercel serverless)
@@ -33,7 +31,13 @@ export const connectDatabase = async (): Promise<string> => {
   }
 
   connectionPromise = (async () => {
-    const isServerless = Boolean(process.env.VERCEL || process.env.NOW_REGION || process.env.AWS_REGION);
+    const isServerless = Boolean(
+      process.env.NETLIFY ||
+      process.env.VERCEL ||
+      process.env.AWS_REGION ||
+      process.env.LAMBDA_TASK_ROOT ||
+      process.env.NOW_REGION
+    );
 
     // Resolve target URI: if SRV format for our cluster is given, rewrite to direct replica set hosts
     let targetUri = env.MONGODB_URI || DIRECT_ATLAS_URI;
@@ -57,7 +61,8 @@ export const connectDatabase = async (): Promise<string> => {
 
       // Local development fallback to MongoMemoryServer
       try {
-        const { MongoMemoryServer } = require('mongodb-memory-server');
+        const memPkg = 'mongodb-memory-server';
+        const { MongoMemoryServer } = eval('require')(memPkg);
         const dbPath = require('path').resolve(__dirname, '../../../data/db');
         require('fs').mkdirSync(dbPath, { recursive: true });
 

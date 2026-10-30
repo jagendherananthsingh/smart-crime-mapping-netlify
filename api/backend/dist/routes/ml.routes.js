@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ml_controller_1 = require("../controllers/ml.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const ml_validator_1 = require("../validators/ml.validator");
+const router = (0, express_1.Router)();
+router.get('/models', auth_middleware_1.authenticate, ml_controller_1.MLController.getModels);
+router.get('/results', auth_middleware_1.authenticate, ml_controller_1.MLController.getResults);
+router.get('/forecast', auth_middleware_1.authenticate, ml_controller_1.MLController.getForecast);
+router.post('/train', auth_middleware_1.authenticate, (0, validate_middleware_1.validateBody)(ml_validator_1.trainModelSchema), ml_controller_1.MLController.train);
+router.post('/predict', auth_middleware_1.authenticate, (0, validate_middleware_1.validateBody)(ml_validator_1.predictCrimeSchema), ml_controller_1.MLController.predict);
+exports.default = router;
