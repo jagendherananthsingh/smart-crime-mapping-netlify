@@ -130,17 +130,19 @@ export const CrimeMapPage: React.FC = () => {
       {/* Main Map & Side Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Map Canvas (3 Cols) */}
-        <div className="lg:col-span-3">
-          {loading ? (
-            <LoadingSkeleton type="chart" height="620px" />
-          ) : (
-              <CrimeMap
-                crimes={crimes}
-                selectedCrime={selectedCrime}
-                onSelectCrime={setSelectedCrime}
-                height="620px"
-                showControls={true}
-              />
+        <div className="lg:col-span-3 relative">
+          <CrimeMap
+            crimes={crimes}
+            selectedCrime={selectedCrime}
+            onSelectCrime={setSelectedCrime}
+            height="620px"
+            showControls={true}
+          />
+          {loading && (
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-900/95 border border-slate-700/80 backdrop-blur-md shadow-2xl text-xs text-white">
+              <div className="w-3.5 h-3.5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+              <span className="font-semibold text-slate-200">Updating Spatial Hotspots...</span>
+            </div>
           )}
         </div>
 

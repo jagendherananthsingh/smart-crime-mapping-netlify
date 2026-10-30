@@ -3,58 +3,115 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnalyticsService = void 0;
 const CrimeRecord_1 = require("../../models/CrimeRecord");
 const Dataset_1 = require("../../models/Dataset");
-const DB_DISTRICT_ALIASES = {
-    'tirupati': ['Tirupathi', 'Tirupati'],
-    'tirupathi': ['Tirupathi', 'Tirupati'],
-    'anantapur': ['Ananthapuramu', 'Anantapur', 'Ananthpuramu'],
-    'ananthapuramu': ['Ananthapuramu', 'Anantapur', 'Ananthpuramu'],
-    'ntr': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
-    'ntr (vijayawada)': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
-    'vijayawada': ['NTR', 'NTR (Vijayawada)', 'Vijayawada', 'Vijayawada City'],
-    'ysr': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
-    'ysr kadapa': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
-    'kadapa': ['YSR', 'YSR Kadapa', 'Kadapa', 'Y.S.R'],
-    'sps nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
-    'nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
-    's.p.s.r nellore': ['SPS Nellore', 'Nellore', 'S.P.S.R Nellore'],
-    'konaseema': ['Dr.B.R.Ambedkar Konaseema', 'Konaseema'],
+const CANONICAL_DISTRICTS = {
+    'alluri sitharama raju': ['Alluri Sitharama Raju'],
+    'anakapalli': ['Anakapalli'],
+    'anantapur': ['Ananthapuramu', 'Anantapur'],
+    'ananthapuramu': ['Ananthapuramu', 'Anantapur'],
+    'annamayya': ['Annamayya'],
+    'bapatla': ['Bapatla'],
+    'chittoor': ['Chittoor'],
     'dr.b.r.ambedkar konaseema': ['Dr.B.R.Ambedkar Konaseema', 'Konaseema'],
-    'visakhapatnam': ['Visakhapatnam', 'Vishakapatnam'],
-    'vishakapatnam': ['Visakhapatnam', 'Vishakapatnam'],
-    'guntur': ['Guntur', 'Guntur(U)', 'Guntur(R)'],
+    'konaseema': ['Dr.B.R.Ambedkar Konaseema', 'Konaseema'],
     'east godavari': ['East Godavari', 'Rajamahendravaram'],
     'rajamahendravaram': ['East Godavari', 'Rajamahendravaram'],
-    'kurnool': ['Kurnool', 'Guntakal Railway'],
-    'krishna': ['Krishna', 'Vijayawada Railway'],
-    'chittoor': ['Chittoor'],
-    'kakinada': ['Kakinada'],
-    'nandyal': ['Nandyal'],
-    'palnadu': ['Palnadu'],
-    'bapatla': ['Bapatla'],
     'eluru': ['Eluru'],
+    'guntur': ['Guntur', 'Guntur(U)', 'Guntur(R)'],
+    'kakinada': ['Kakinada'],
+    'krishna': ['Krishna', 'Vijayawada Railway'],
+    'kurnool': ['Kurnool', 'Guntakal Railway'],
+    'nandyal': ['Nandyal'],
+    'ntr': ['NTR', 'Vijayawada Railway'],
+    'ntr (vijayawada)': ['NTR', 'Vijayawada Railway'],
+    'vijayawada': ['NTR', 'Vijayawada Railway'],
+    'palnadu': ['Palnadu'],
+    'parvathipuram manyam': ['Parvathipuram Manyam'],
     'prakasam': ['Prakasam'],
+    'sps nellore': ['SPS Nellore', 'Nellore'],
+    'nellore': ['SPS Nellore', 'Nellore'],
+    's.p.s.r nellore': ['SPS Nellore', 'Nellore'],
+    'sri sathya sai': ['Sri Sathya Sai'],
     'srikakulam': ['Srikakulam'],
+    'tirupati': ['Tirupathi', 'Tirupati'],
+    'tirupathi': ['Tirupathi', 'Tirupati'],
+    'visakhapatnam': ['Visakhapatnam', 'Vishakapatnam'],
+    'vishakapatnam': ['Visakhapatnam', 'Vishakapatnam'],
     'vizianagaram': ['Vizianagaram'],
     'west godavari': ['West Godavari'],
-    'annamayya': ['Annamayya'],
-    'anakapalli': ['Anakapalli'],
-    'sri sathya sai': ['Sri Sathya Sai'],
-    'alluri sitharama raju': ['Alluri Sitharama Raju'],
-    'parvathipuram manyam': ['Parvathipuram Manyam'],
+    'ysr': ['YSR', 'Kadapa', 'YSR Kadapa'],
+    'ysr kadapa': ['YSR', 'Kadapa', 'YSR Kadapa'],
+    'kadapa': ['YSR', 'Kadapa', 'YSR Kadapa'],
+};
+const CANONICAL_CATEGORIES = {
+    'theft': 'Theft',
+    'thefts': 'Theft',
+    'burglary': 'Burglary',
+    'burglaries': 'Burglary',
+    'robbery': 'Robbery',
+    'robberies': 'Robbery',
+    'murder': 'Murder',
+    'murders': 'Murder',
+    'cheating': 'Cheatings',
+    'cheatings': 'Cheatings',
+    'riot': 'Riots',
+    'riots': 'Riots',
+    'rape': 'Rape',
+    'rapes': 'Rape',
+    'dacoity': 'Dacoity',
+    'dowry death': 'Dowry Deaths',
+    'dowry deaths': 'Dowry Deaths',
+    'kidnapping (women & girls)': 'Kidnapping (Women & Girls)',
+    'kidnapping (others)': 'Kidnapping (Others)',
+    'kidnapping': 'Kidnapping (Women & Girls)',
+    'molestation & harassment': 'Molestation & Harassment',
+    'molestation': 'Molestation & Harassment',
+    'harassment': 'Molestation & Harassment',
+    'other ipc crimes': 'Other IPC Crimes',
+    'other crimes': 'Other Crimes',
+    'other': 'Other Crimes',
 };
 class AnalyticsService {
     static cache = new Map();
-    static CACHE_TTL = 5 * 60 * 1000;
+    static inFlight = new Map();
+    static CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
     static async withCache(key, fn) {
         const cached = this.cache.get(key);
         if (cached && cached.expiry > Date.now())
             return cached.data;
-        const data = await fn();
-        this.cache.set(key, { data, expiry: Date.now() + this.CACHE_TTL });
-        return data;
+        if (this.inFlight.has(key)) {
+            return this.inFlight.get(key);
+        }
+        const promise = (async () => {
+            try {
+                const data = await fn();
+                this.cache.set(key, { data, expiry: Date.now() + this.CACHE_TTL });
+                return data;
+            }
+            finally {
+                this.inFlight.delete(key);
+            }
+        })();
+        this.inFlight.set(key, promise);
+        return promise;
+    }
+    static prewarm() {
+        setTimeout(async () => {
+            try {
+                await Promise.allSettled([
+                    this.getSummary({}),
+                    this.getCategoryAnalysis({}),
+                    this.getGeographicAnalysis({}),
+                    this.getTemporalAnalysis({}),
+                ]);
+                console.log('[AnalyticsService] Cache pre-warmed for rapid sub-50ms responses');
+            }
+            catch (e) {
+                // non-blocking
+            }
+        }, 200);
     }
     /**
-     * Build MongoDB match stage from filter options with robust alias resolution
+     * Build MongoDB match stage from filter options with fast indexed canonical resolution
      */
     static buildMatchQuery(filters) {
         const query = {};
@@ -70,9 +127,15 @@ class AnalyticsService {
         if (filters.month)
             query.month = Number(filters.month);
         if (filters.crimeCategory && filters.crimeCategory !== 'ALL') {
-            const catTrim = String(filters.crimeCategory).trim();
-            const baseName = catTrim.replace(/s$/i, '');
-            query.crimeCategory = { $regex: new RegExp(`^${baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
+            const catTrim = String(filters.crimeCategory).trim().toLowerCase();
+            const exactCat = CANONICAL_CATEGORIES[catTrim] || CANONICAL_CATEGORIES[catTrim.replace(/s$/, '')];
+            if (exactCat) {
+                query.crimeCategory = exactCat;
+            }
+            else {
+                const baseName = catTrim.replace(/s$/i, '');
+                query.crimeCategory = { $regex: new RegExp(`^${baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
+            }
         }
         if (filters.district && filters.district !== 'ALL') {
             const dItems = Array.isArray(filters.district) ? filters.district : [filters.district];
@@ -81,16 +144,15 @@ class AnalyticsService {
                 if (!d || d === 'ALL')
                     continue;
                 const key = String(d).trim().toLowerCase();
-                const aliases = DB_DISTRICT_ALIASES[key] || [String(d).trim()];
+                const aliases = CANONICAL_DISTRICTS[key] || [String(d).trim()];
                 aliases.forEach((a) => allAliases.add(a));
-                allAliases.add(String(d).trim());
             }
             const aliasArray = Array.from(allAliases).filter(Boolean);
             if (aliasArray.length === 1) {
-                query.district = { $regex: new RegExp(`^${aliasArray[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
+                query.district = aliasArray[0];
             }
             else if (aliasArray.length > 1) {
-                query.district = { $in: aliasArray.map((a) => new RegExp(`^${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i')) };
+                query.district = { $in: aliasArray };
             }
         }
         if (filters.city && filters.city !== 'ALL') {
@@ -117,8 +179,9 @@ class AnalyticsService {
     }
     static async _getSummary(filters = {}) {
         const match = this.buildMatchQuery(filters);
+        const hasFilter = Object.keys(match).length > 0;
         const [totalRecords, categoryAgg, districtAgg, severityAgg, datasetCount] = await Promise.all([
-            CrimeRecord_1.CrimeRecord.countDocuments(match),
+            hasFilter ? CrimeRecord_1.CrimeRecord.countDocuments(match) : CrimeRecord_1.CrimeRecord.estimatedDocumentCount(),
             CrimeRecord_1.CrimeRecord.aggregate([
                 { $match: match },
                 { $group: { _id: '$crimeCategory', count: { $sum: 1 } } },
@@ -324,7 +387,9 @@ class AnalyticsService {
         const total = categories.reduce((sum, c) => sum + c.count, 0) || 1;
         const categoryBreakdown = categories.map((c) => ({
             category: c._id,
+            name: c._id,
             count: c.count,
+            value: c.count,
             percentage: Number(((c.count / total) * 100).toFixed(1)),
         }));
         // Pivot categoryBySeverity into crossTab matrix
@@ -427,7 +492,9 @@ class AnalyticsService {
         const totalRecords = districts.reduce((sum, d) => sum + d.count, 0) || 1;
         const districtList = districts.map((d) => ({
             district: d._id,
+            name: d._id,
             count: d.count,
+            value: d.count,
             percentage: Number(((d.count / totalRecords) * 100).toFixed(1)),
             topCategory: topCatByDistrict[d._id] || 'Other Crimes',
             criticalRatio: d.count > 0 ? Number((d.criticalCount / d.count).toFixed(3)) : 0.18,

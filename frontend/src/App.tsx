@@ -55,7 +55,7 @@ export const App: React.FC = () => {
             >
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="crime-map" element={<RoleGuard allowedRoles={['ADMIN', 'POLICE']}><CrimeMapPage /></RoleGuard>} />
+              <Route path="crime-map" element={<RoleGuard allowedRoles={['ADMIN', 'POLICE', 'USER']}><CrimeMapPage /></RoleGuard>} />
               <Route path="analytics" element={<RoleGuard allowedRoles={['ADMIN', 'POLICE']}><Analytics /></RoleGuard>} />
               <Route path="predictions" element={<RoleGuard allowedRoles={['ADMIN', 'POLICE']}><Predictions /></RoleGuard>} />
               <Route path="model-performance" element={<RoleGuard allowedRoles={['ADMIN', 'POLICE']}><ModelPerformance /></RoleGuard>} />

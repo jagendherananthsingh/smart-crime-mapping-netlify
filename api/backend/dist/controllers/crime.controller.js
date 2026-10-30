@@ -118,9 +118,11 @@ class CrimeController {
             const { isDbConnected } = require('../config/database');
             if (isDbConnected()) {
                 const matchQuery = analytics_service_1.AnalyticsService.buildMatchQuery(req.query);
+                const hasFilter = Object.keys(matchQuery).length > 0;
                 const [total, records] = await Promise.all([
-                    CrimeRecord_1.CrimeRecord.countDocuments(matchQuery),
+                    hasFilter ? CrimeRecord_1.CrimeRecord.countDocuments(matchQuery) : CrimeRecord_1.CrimeRecord.estimatedDocumentCount(),
                     CrimeRecord_1.CrimeRecord.find(matchQuery)
+                        .select('-__v')
                         .sort({ date: -1 })
                         .skip(skip)
                         .limit(limit)

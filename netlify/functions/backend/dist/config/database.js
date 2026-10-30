@@ -46,6 +46,13 @@ const connectDatabase = async () => {
                 connectTimeoutMS: 4000,
             });
             console.log(`[Database] Connected to external MongoDB Atlas cluster`);
+            try {
+                const { AnalyticsService } = require('../services/analytics/analytics.service');
+                AnalyticsService.prewarm();
+            }
+            catch (e) {
+                // non-blocking
+            }
             return targetUri;
         }
         catch (err) {

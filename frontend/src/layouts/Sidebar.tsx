@@ -29,7 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, adminOnly: false, restricted: false },
-    { path: '/crime-map', label: 'Crime Map', icon: Map, adminOnly: false, restricted: true },
+    { path: '/crime-map', label: 'Crime Map', icon: Map, adminOnly: false, restricted: false },
     { path: '/analytics', label: 'Deep Analytics', icon: BarChart3, adminOnly: false, restricted: true },
     { path: '/predictions', label: 'ML Predictions', icon: BrainCircuit, adminOnly: false, restricted: true },
     { path: '/model-performance', label: 'Model Benchmarks', icon: Activity, adminOnly: false, restricted: true },

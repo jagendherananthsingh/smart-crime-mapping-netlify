@@ -134,10 +134,12 @@ export class CrimeController {
 
       if (isDbConnected()) {
         const matchQuery = AnalyticsService.buildMatchQuery(req.query);
+        const hasFilter = Object.keys(matchQuery).length > 0;
 
         const [total, records] = await Promise.all([
-          CrimeRecord.countDocuments(matchQuery),
+          hasFilter ? CrimeRecord.countDocuments(matchQuery) : CrimeRecord.estimatedDocumentCount(),
           CrimeRecord.find(matchQuery)
+            .select('-__v')
             .sort({ date: -1 })
             .skip(skip)
             .limit(limit)

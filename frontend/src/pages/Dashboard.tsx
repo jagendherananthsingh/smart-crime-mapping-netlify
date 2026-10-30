@@ -113,6 +113,7 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [categoryViewMode, setCategoryViewMode] = useState<'major' | 'all'>('major');
 
   useEffect(() => {
     const fetchFilters = async () => {
@@ -141,51 +142,34 @@ export const Dashboard: React.FC = () => {
       setRefreshing(true);
       setError(null);
 
-      // Fetch core datasets for all user roles
-      const promises: Promise<any>[] = [
-        dashboardApi.getSummary(filters),
-        dashboardApi.getCategories(filters),
-        dashboardApi.getLocations(filters),
-        dashboardApi.getTrends(filters),
-        dashboardApi.getInsights(filters),
-        crimeApi.getCrimes({ ...filters, limit: 30 }),
-      ];
+      // Fast progressive streaming: update UI components immediately as each endpoint resolves
+      const pSummary = dashboardApi.getSummary(filters).then((res) => {
+        if (res?.data) setSummary(res.data);
+      }).catch(() => {});
 
-      const results = await Promise.allSettled(promises);
-      const sumRes = results[0]?.status === 'fulfilled' ? results[0].value : null;
-      const catRes = results[1]?.status === 'fulfilled' ? results[1].value : null;
-      const locRes = results[2]?.status === 'fulfilled' ? results[2].value : null;
-      const trendRes = results[3]?.status === 'fulfilled' ? results[3].value : null;
-      const insRes = results[4]?.status === 'fulfilled' ? results[4].value : null;
-      const crimesRes = results[5]?.status === 'fulfilled' ? results[5].value : null;
+      const pCategories = dashboardApi.getCategories(filters).then((res) => {
+        const catArr = res?.data?.categoryBreakdown || res?.data?.categories || [];
+        if (catArr.length > 0) setCategories(catArr);
+      }).catch(() => {});
 
-      if (sumRes?.data) {
-        setSummary(sumRes.data);
-      }
+      const pLocations = dashboardApi.getLocations(filters).then((res) => {
+        const locArr = res?.data?.districts || res?.data?.topLocations || [];
+        if (locArr.length > 0) setLocations(locArr);
+      }).catch(() => {});
 
-      // Normalize categories
-      const catData = catRes?.data;
-      const catArr = catData?.categoryBreakdown || catData?.categories || [];
-      if (catArr.length > 0) {
-        setCategories(catArr);
-      }
+      const pTrends = dashboardApi.getTrends(filters).then((res) => {
+        if (res?.data) setTrends(res.data);
+      }).catch(() => {});
 
-      // Normalize locations
-      const locData = locRes?.data;
-      const locArr = locData?.districts || locData?.topLocations || [];
-      if (locArr.length > 0) {
-        setLocations(locArr);
-      }
+      const pInsights = dashboardApi.getInsights(filters).then((res) => {
+        if (res?.data?.insights) setInsights(res.data.insights);
+      }).catch(() => {});
 
-      if (trendRes?.data) {
-        setTrends(trendRes.data);
-      }
-      if (insRes?.data?.insights) {
-        setInsights(insRes.data.insights);
-      }
-      if (crimesRes?.data?.records) {
-        setRecentCrimes(crimesRes.data.records);
-      }
+      const pCrimes = crimeApi.getCrimes({ ...filters, limit: 30 }).then((res) => {
+        if (res?.data?.records) setRecentCrimes(res.data.records);
+      }).catch(() => {});
+
+      await Promise.allSettled([pSummary, pCategories, pLocations, pTrends, pInsights, pCrimes]);
     } catch (err: any) {
       console.warn('Dashboard fetch notice:', err);
     } finally {
@@ -674,9 +658,43 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-              <h3 className="text-sm font-bold text-white mb-1">Crime Category Proportion</h3>
-              <p className="text-xs text-slate-400 mb-4">Share across major crime types</p>
-              <DistributionDonutChart data={activeCategories} height={300} />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                <div>
+                  <h3 className="text-sm font-bold text-white mb-0.5">Crime Category Proportion</h3>
+                  <p className="text-xs text-slate-400">
+                    {categoryViewMode === 'major' ? 'Share across major crime types' : 'All crime classifications'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 bg-slate-800/90 p-1 rounded-xl border border-slate-700/60 text-[11px] self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryViewMode('major')}
+                    className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
+                      categoryViewMode === 'major'
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Major Types
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCategoryViewMode('all')}
+                    className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
+                      categoryViewMode === 'all'
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                </div>
+              </div>
+              <DistributionDonutChart
+                data={categoryViewMode === 'major' ? specificCategories : activeCategories}
+                height={290}
+                centerLabel={categoryViewMode === 'major' ? 'Major Crimes' : 'Total Crimes'}
+              />
             </div>
           </div>
 
@@ -757,28 +775,28 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Mini Map Preview - Strictly for ADMIN */}
-          {isAdmin && (
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-indigo-400" />
-                    Spatial Hotspot Geographic Preview
-                  </h3>
-                  <p className="text-xs text-slate-400">Incident coordinate density overlay (Admin View)</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate('/crime-map')}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition cursor-pointer self-start sm:self-auto"
-                >
-                  Open Full Crime Map <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+          {/* Spatial Hotspot Map Preview */}
+          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-indigo-400" />
+                  Spatial Hotspot Geographic Preview
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Incident coordinate density overlay {isDistrictFiltered ? `• ${filters.district}` : '• Andhra Pradesh'}
+                </p>
               </div>
-              <CrimeMap crimes={recentCrimes} height="360px" showControls={false} />
+              <button
+                type="button"
+                onClick={() => navigate('/crime-map')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition cursor-pointer self-start sm:self-auto"
+              >
+                Open Full Crime Map <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-          )}
+            <CrimeMap crimes={recentCrimes} height="360px" showControls={true} />
+          </div>
         </>
       )}
     </div>
