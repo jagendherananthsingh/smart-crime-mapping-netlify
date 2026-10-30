@@ -3,10 +3,14 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["mongodb-memory-server"]
-  included_files = ["data/**"]
+  included_files = ["data/**", "netlify/functions/backend/**"]
 
 # API rewrite to Netlify serverless function
 [[redirects]]

@@ -10,7 +10,7 @@ console.log('==================================================');
 
 // 1. Install & Build Backend
 console.log('\n[1/4] Building Backend TypeScript...');
-execSync('npm --prefix backend install', { cwd: rootDir, stdio: 'inherit' });
+execSync('npm --prefix backend install --no-audit --legacy-peer-deps', { cwd: rootDir, stdio: 'inherit' });
 execSync('npm --prefix backend run build', { cwd: rootDir, stdio: 'inherit' });
 
 // 2. Synchronize Backend into netlify/functions layer and api/ layer
@@ -33,7 +33,7 @@ console.log('✓ Successfully synchronized backend distribution into api/backend
 
 // 3. Install & Build Frontend
 console.log('\n[3/4] Building Frontend Vite Application...');
-execSync('npm --prefix frontend install', { cwd: rootDir, stdio: 'inherit' });
+execSync('npm --prefix frontend install --no-audit --legacy-peer-deps', { cwd: rootDir, stdio: 'inherit' });
 execSync('npm --prefix frontend run build', { cwd: rootDir, stdio: 'inherit' });
 
 // 4. Synchronize Frontend to root dist and prepare Netlify SPA & API redirect rules
