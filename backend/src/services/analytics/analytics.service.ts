@@ -551,6 +551,8 @@ export class AnalyticsService {
       topCategory: topCatByDistrict[d._id] || 'Other Crimes',
       criticalRatio: d.count > 0 ? Number((d.criticalCount / d.count).toFixed(3)) : 0.18,
       criticalPercentage: d.count > 0 ? Number(((d.criticalCount / d.count) * 100).toFixed(1)) : 18.0,
+      latitude: Number((d.avgLat || 16.5).toFixed(5)),
+      longitude: Number((d.avgLng || 80.5).toFixed(5)),
       center: [Number((d.avgLat || 16.5).toFixed(5)), Number((d.avgLng || 80.5).toFixed(5))],
       concentrationLevel:
         d.count / totalRecords > 0.25

@@ -11,17 +11,18 @@ export type TileProvider = 'dark' | 'osm' | 'light' | 'satellite';
 
 interface TileConfig {
   url: string;
+  referenceUrl?: string;
   attribution: string;
   maxZoom: number;
-  subdomains?: string;
 }
 
+// 100% Free, Official, Keyless Tile Providers with ZERO Watermarks
 const FREE_TILE_PROVIDERS: Record<TileProvider, TileConfig> = {
   dark: {
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    maxZoom: 19,
-    subdomains: 'abcd',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    referenceUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Public GIS Cartography',
+    maxZoom: 16,
   },
   osm: {
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -29,22 +30,24 @@ const FREE_TILE_PROVIDERS: Record<TileProvider, TileConfig> = {
     maxZoom: 19,
   },
   light: {
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    maxZoom: 19,
-    subdomains: 'abcd',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    referenceUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Public GIS Cartography',
+    maxZoom: 16,
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Open GIS Community',
+    referenceUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Source: Esri, Maxar, Earthstar Geographics',
     maxZoom: 18,
   },
 };
 
 export interface DistrictHotspot {
   district: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
+  center?: [number, number];
   count: number;
   percentage?: number;
   topCategory?: string;
@@ -82,7 +85,8 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
   const activeCrimes = useMemo(() => crimes || markers || [], [crimes, markers]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const baseTileRef = useRef<L.TileLayer | null>(null);
+  const refTileRef = useRef<L.TileLayer | null>(null);
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const heatLayerRef = useRef<L.LayerGroup | null>(null);
@@ -107,7 +111,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // Create layer groups in stacking order
+    // Create layer groups in appropriate z-order
     hotspotsLayerRef.current = L.layerGroup().addTo(map);
     heatLayerRef.current = L.layerGroup().addTo(map);
     markersLayerRef.current = L.layerGroup().addTo(map);
@@ -134,23 +138,38 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
     };
   }, []);
 
-  // Update Base Tile Layer
+  // Update Base Tile Layer with Clean Zero-Watermark Esri / OSM Maps
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
-    if (tileLayerRef.current) {
-      mapInstanceRef.current.removeLayer(tileLayerRef.current);
+    if (baseTileRef.current) {
+      mapInstanceRef.current.removeLayer(baseTileRef.current);
+    }
+    if (refTileRef.current) {
+      mapInstanceRef.current.removeLayer(refTileRef.current);
     }
 
     const config = FREE_TILE_PROVIDERS[tileMode] || FREE_TILE_PROVIDERS.dark;
-    const tileLayer = L.tileLayer(config.url, {
+    const baseLayer = L.tileLayer(config.url, {
       maxZoom: config.maxZoom,
       attribution: config.attribution,
-      subdomains: config.subdomains || 'abc',
+      subdomains: 'abc',
     });
 
-    tileLayer.addTo(mapInstanceRef.current);
-    tileLayerRef.current = tileLayer;
+    baseLayer.addTo(mapInstanceRef.current);
+    baseTileRef.current = baseLayer;
+
+    // If reference layer exists (labels, roads, city names), add it over base
+    if (config.referenceUrl) {
+      const refLayer = L.tileLayer(config.referenceUrl, {
+        maxZoom: config.maxZoom,
+        subdomains: 'abc',
+        opacity: 0.9,
+      });
+      refLayer.addTo(mapInstanceRef.current);
+      refTileRef.current = refLayer;
+    }
+
     mapInstanceRef.current.invalidateSize();
   }, [tileMode]);
 
@@ -164,14 +183,16 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
     const maxCount = Math.max(...hotspots.map((h) => h.count), 1);
 
     hotspots.forEach((h) => {
-      if (!h.latitude || !h.longitude) return;
+      const lat = h.latitude || (Array.isArray(h.center) ? h.center[0] : undefined);
+      const lng = h.longitude || (Array.isArray(h.center) ? h.center[1] : undefined);
+      if (!lat || !lng) return;
 
       const ratio = h.count / maxCount;
       const radiusMeters = Math.min(38000, Math.max(12000, Math.round(ratio * 34000)));
 
-      // Color coding based on incident intensity
+      // Color coding based on incident volume
       const haloColor =
-        ratio > 0.75
+        ratio > 0.7
           ? '#ef4444' // Critical (Red)
           : ratio > 0.45
           ? '#f97316' // Elevated (Orange)
@@ -180,12 +201,12 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
           : '#6366f1'; // Normal (Indigo)
 
       // 1. Density Ring Halo
-      const haloCircle = L.circle([h.latitude, h.longitude], {
+      const haloCircle = L.circle([lat, lng], {
         radius: radiusMeters,
         color: haloColor,
         weight: 1.5,
         fillColor: haloColor,
-        fillOpacity: 0.18,
+        fillOpacity: 0.16,
         dashArray: '4 4',
       });
 
@@ -195,7 +216,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
 
       const hubHtml = `
         <div class="group relative flex items-center justify-center cursor-pointer select-none">
-          <div class="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/95 border shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-110" style="border-color: ${haloColor};">
+          <div class="relative flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/95 border shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-110" style="border-color: ${haloColor};">
             <span class="w-2 h-2 rounded-full shadow-xs ${isCritical ? 'animate-ping' : ''}" style="background-color: ${haloColor};"></span>
             <span class="text-[11px] font-bold text-white tracking-tight">${h.district}</span>
             <span class="text-[10px] font-mono font-black px-1.5 py-0.2 rounded-md bg-white/10 text-slate-200" style="color: ${haloColor};">${countLabel}</span>
@@ -210,11 +231,11 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
         iconAnchor: [60, 16],
       });
 
-      const hubMarker = L.marker([h.latitude, h.longitude], { icon: hubIcon });
+      const hubMarker = L.marker([lat, lng], { icon: hubIcon });
 
       const popupHtml = `
         <div class="p-3.5 min-w-[240px] text-slate-900 font-sans">
-          <div class="flex items-center justify-between border-b pb-2 mb-2">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2">
             <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
               <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${haloColor};"></span>
               ${h.district} District Hotspot
@@ -249,7 +270,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
 
           <button
             type="button"
-            id="btn-inspect-${h.district.replace(/\s+/g, '-')}"
+            id="btn-inspect-${h.district.replace(/[^a-zA-Z0-9]/g, '-')}"
             class="mt-3 w-full py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition cursor-pointer text-center block"
           >
             Zoom into ${h.district}
@@ -260,11 +281,11 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
       hubMarker.bindPopup(popupHtml, { className: 'crime-leaflet-popup' });
 
       hubMarker.on('popupopen', () => {
-        const btn = document.getElementById(`btn-inspect-${h.district.replace(/\s+/g, '-')}`);
+        const btn = document.getElementById(`btn-inspect-${h.district.replace(/[^a-zA-Z0-9]/g, '-')}`);
         if (btn) {
           btn.onclick = () => {
             if (mapInstanceRef.current) {
-              mapInstanceRef.current.flyTo([h.latitude, h.longitude], 12, { duration: 1.2 });
+              mapInstanceRef.current.flyTo([lat, lng], 12, { duration: 1.2 });
             }
             if (onSelectDistrict) onSelectDistrict(h.district);
           };
@@ -319,20 +340,27 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
               : 0.35;
           pointsToHeat.push([crime.latitude, crime.longitude, intensity]);
         });
-      } else if (hotspots.length > 0) {
+      }
+
+      // If statewide hotspots exist, supplement heat points with district centroids
+      if (hotspots.length > 0) {
         const maxH = Math.max(...hotspots.map((h) => h.count), 1);
         hotspots.forEach((h) => {
-          pointsToHeat.push([h.latitude, h.longitude, Math.max(0.4, h.count / maxH)]);
+          const lat = h.latitude || (Array.isArray(h.center) ? h.center[0] : undefined);
+          const lng = h.longitude || (Array.isArray(h.center) ? h.center[1] : undefined);
+          if (lat && lng) {
+            pointsToHeat.push([lat, lng, Math.max(0.4, h.count / maxH)]);
+          }
         });
       }
 
       if (pointsToHeat.length > 0) {
         const heatLayer = (L as any).heatLayer(pointsToHeat, {
-          radius: 34,
-          blur: 24,
+          radius: 36,
+          blur: 26,
           maxZoom: 13,
           max: 1.0,
-          minOpacity: 0.35,
+          minOpacity: 0.38,
           gradient: {
             0.15: '#3b82f6', // blue (low)
             0.35: '#10b981', // emerald
@@ -345,12 +373,30 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
       }
     }
 
-    // 2. Precision Incident Pins
+    // 2. Precision Incident Pins with Anti-Overlap Dispersion
     if (showMarkers && validCrimes.length > 0) {
-      // Render up to 250 individual pins
-      const pins = validCrimes.slice(0, 250);
+      const pins = validCrimes.slice(0, 300);
 
-      pins.forEach((crime) => {
+      // Intelligent spatial dispersion so overlapping pins never occlude each other
+      const coordBuckets = new Map<string, number>();
+      const dispersedPins = pins.map((crime) => {
+        const bucketKey = `${crime.latitude.toFixed(3)},${crime.longitude.toFixed(3)}`;
+        const indexInBucket = coordBuckets.get(bucketKey) || 0;
+        coordBuckets.set(bucketKey, indexInBucket + 1);
+
+        if (indexInBucket === 0) {
+          return { crime, lat: crime.latitude, lng: crime.longitude };
+        }
+
+        // Golden ratio spiral dispersion
+        const angle = indexInBucket * 2.39996;
+        const distance = 0.007 * Math.sqrt(indexInBucket);
+        const lat = crime.latitude + Math.cos(angle) * distance;
+        const lng = crime.longitude + (Math.sin(angle) * distance) / Math.cos((crime.latitude * Math.PI) / 180);
+        return { crime, lat, lng };
+      });
+
+      dispersedPins.forEach(({ crime, lat, lng }) => {
         const color = getCategoryColor(crime.crimeCategory);
         const severityProps = getSeverityBadgeProps(crime.severity);
         const isSelected = selectedCrime?.caseId === crime.caseId;
@@ -378,7 +424,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
           popupAnchor: [0, -12],
         });
 
-        const marker = L.marker([crime.latitude, crime.longitude], { icon: pinIcon });
+        const marker = L.marker([lat, lng], { icon: pinIcon });
 
         const popupContent = `
           <div class="p-3 min-w-[240px] text-slate-900 font-sans">
@@ -419,17 +465,17 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
     }
 
     // Auto-fit bounds if we have valid coordinates
-    if (validCrimes.length > 0) {
+    if (validCrimes.length > 0 && validCrimes.length < 50) {
       const bounds = L.latLngBounds(validCrimes.map((c) => [c.latitude, c.longitude]));
       if (bounds.isValid()) {
         mapInstanceRef.current.fitBounds(bounds, {
           padding: [45, 45],
-          maxZoom: validCrimes.length > 20 ? 11 : 14,
+          maxZoom: 14,
           animate: true,
         });
       }
     }
-  }, [activeCrimes, heatPoints, showHeatmap, showMarkers]);
+  }, [activeCrimes, heatPoints, hotspots, showHeatmap, showMarkers]);
 
   // Selected crime focus
   useEffect(() => {
@@ -450,7 +496,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
 
   return (
     <div
-      className="relative w-full rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950"
+      className="relative w-full rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-[#111625]"
       style={{ height }}
     >
       <div ref={mapContainerRef} className="w-full h-full z-0" />
