@@ -261,6 +261,10 @@ export const mapApi = {
     const res = await apiClient.get<ApiResponse<number[][]>>('/map/heatmap', { params: filters });
     return res.data;
   },
+  getHotspots: async (filters: FilterState = {}) => {
+    const res = await apiClient.get<ApiResponse<any[]>>('/map/hotspots', { params: filters });
+    return res.data;
+  },
   getAreaStats: async (district: string) => {
     const res = await apiClient.get<ApiResponse<any>>('/map/area-stats', { params: { district } });
     return res.data;

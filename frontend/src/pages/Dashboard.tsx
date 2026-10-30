@@ -795,7 +795,13 @@ export const Dashboard: React.FC = () => {
                 Open Full Crime Map <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
-            <CrimeMap crimes={recentCrimes} height="360px" showControls={true} />
+            <CrimeMap
+              crimes={recentCrimes}
+              hotspots={locations}
+              height="380px"
+              showControls={true}
+              onSelectDistrict={() => navigate('/crime-map')}
+            />
           </div>
         </>
       )}

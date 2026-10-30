@@ -86,11 +86,33 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Leaflet Map Customizations */
+/* Leaflet Map Customizations & Tailwind Tile Fix */
 .leaflet-container {
   font-family: 'Inter', sans-serif !important;
-  background-color: #0f172a !important;
-  z-index: 10 !important;
+  background-color: #0b0f19 !important;
+}
+
+.leaflet-container img,
+.leaflet-container .leaflet-tile,
+.leaflet-tile-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile-pane {
+  z-index: 200 !important;
+}
+
+.leaflet-overlay-pane {
+  z-index: 400 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 600 !important;
+}
+
+.leaflet-popup-pane {
+  z-index: 700 !important;
 }
 
 .leaflet-popup-content-wrapper {

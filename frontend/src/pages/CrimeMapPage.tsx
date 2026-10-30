@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Layers, Filter, Search, Calendar, ChevronRight, X, ShieldAlert } from 'lucide-react';
+import { MapPin, Layers, Filter, Search, Calendar, ChevronRight, X, ShieldAlert, Radio } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
-import { crimeApi } from '../api/endpoints';
+import { crimeApi, mapApi } from '../api/endpoints';
 import { CrimeRecord, FilterState } from '../types';
-import { CrimeMap } from '../maps/CrimeMap';
+import { CrimeMap, DistrictHotspot } from '../maps/CrimeMap';
 import { FilterBar } from '../components/common/FilterBar';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { formatDate, formatHour } from '../utils/formatters';
@@ -12,6 +12,8 @@ import { getCategoryColor, getSeverityBadgeProps } from '../utils/colors';
 export const CrimeMapPage: React.FC = () => {
   const { user } = useAuth();
   const [crimes, setCrimes] = useState<CrimeRecord[]>([]);
+  const [hotspots, setHotspots] = useState<DistrictHotspot[]>([]);
+  const [heatPoints, setHeatPoints] = useState<number[][]>([]);
   const [selectedCrime, setSelectedCrime] = useState<CrimeRecord | null>(null);
   const [filters, setFilters] = useState<FilterState>({});
   const [filterData, setFilterData] = useState<{
@@ -40,16 +42,29 @@ export const CrimeMapPage: React.FC = () => {
     fetchFilters();
   }, []);
 
-  // Fetch crimes for the map
+  // Fetch crimes, hotspots, and heatmap points for the map
   const fetchMapCrimes = async () => {
     try {
       setLoading(true);
-      const res = await crimeApi.getCrimes({
-        ...filters,
-        search: searchQuery || undefined,
-        limit: 150, // Fast, lag-free payload
-      });
-      setCrimes(res.data.records || []);
+      const [crimesRes, hotspotsRes, heatmapRes] = await Promise.allSettled([
+        crimeApi.getCrimes({
+          ...filters,
+          search: searchQuery || undefined,
+          limit: 250,
+        }),
+        mapApi.getHotspots(filters),
+        mapApi.getHeatmap(filters),
+      ]);
+
+      if (crimesRes.status === 'fulfilled' && crimesRes.value?.data?.records) {
+        setCrimes(crimesRes.value.data.records);
+      }
+      if (hotspotsRes.status === 'fulfilled' && Array.isArray(hotspotsRes.value?.data)) {
+        setHotspots(hotspotsRes.value.data);
+      }
+      if (heatmapRes.status === 'fulfilled' && Array.isArray(heatmapRes.value?.data)) {
+        setHeatPoints(heatmapRes.value.data);
+      }
     } catch (err) {
       console.error('Failed to load crimes for map:', err);
     } finally {
@@ -125,6 +140,30 @@ export const CrimeMapPage: React.FC = () => {
             Search
           </button>
         </form>
+
+        {/* Quick Hotspot District Selection Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1 custom-scrollbar text-xs">
+          <span className="text-[11px] font-bold text-slate-400 shrink-0 mr-1 flex items-center gap-1">
+            <Radio className="w-3 h-3 text-indigo-400" /> Hotspot Districts:
+          </span>
+          {['ALL', 'Guntur', 'NTR (Vijayawada)', 'Visakhapatnam', 'Tirupati', 'Kurnool', 'Anantapur', 'SPS Nellore', 'YSR Kadapa', 'Prakasam', 'East Godavari'].map((dist) => {
+            const isSelected = (!filters.district || filters.district === 'ALL') ? dist === 'ALL' : filters.district === dist;
+            return (
+              <button
+                key={dist}
+                type="button"
+                onClick={() => setFilters((prev) => ({ ...prev, district: dist === 'ALL' ? undefined : dist }))}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold shrink-0 transition cursor-pointer ${
+                  isSelected
+                    ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                {dist === 'ALL' ? 'Statewide (All AP)' : dist}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Main Map & Side Stats Grid */}
@@ -133,15 +172,20 @@ export const CrimeMapPage: React.FC = () => {
         <div className="lg:col-span-3 relative">
           <CrimeMap
             crimes={crimes}
+            hotspots={hotspots}
+            heatPoints={heatPoints}
             selectedCrime={selectedCrime}
             onSelectCrime={setSelectedCrime}
-            height="620px"
+            onSelectDistrict={(dist) => {
+              setFilters((prev) => ({ ...prev, district: dist === 'ALL' ? undefined : dist }));
+            }}
+            height="640px"
             showControls={true}
           />
           {loading && (
-            <div className="absolute top-4 left-4 z-20 flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-900/95 border border-slate-700/80 backdrop-blur-md shadow-2xl text-xs text-white">
+            <div className="absolute top-4 left-4 z-[600] flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-900/95 border border-slate-700/80 backdrop-blur-md shadow-2xl text-xs text-white">
               <div className="w-3.5 h-3.5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-              <span className="font-semibold text-slate-200">Updating Spatial Hotspots...</span>
+              <span className="font-semibold text-slate-200">Updating Spatial Distribution...</span>
             </div>
           )}
         </div>
