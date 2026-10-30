@@ -8,10 +8,8 @@ import {
   BrainCircuit,
   Activity,
   Database,
-  FileText,
   User,
   Users,
-  Settings,
   Shield,
   ShieldCheck,
   X,
@@ -34,7 +32,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { path: '/predictions', label: 'ML Predictions', icon: BrainCircuit, adminOnly: false, restricted: true },
     { path: '/model-performance', label: 'Model Benchmarks', icon: Activity, adminOnly: false, restricted: true },
     { path: '/datasets', label: 'Dataset Repository', icon: Database, adminOnly: false, restricted: true },
-    { path: '/reports', label: 'Academic Reports', icon: FileText, adminOnly: false, restricted: true },
     { path: '/data-requests', label: 'Official Data Request', icon: ShieldCheck, adminOnly: false, restricted: false },
   ].filter(item => {
     if (item.adminOnly && user?.role !== 'ADMIN') return false;
@@ -45,7 +42,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const adminNavItems = [
     { path: '/admin/requests', label: 'Police Requisitions', icon: ShieldCheck },
     { path: '/admin/users', label: 'User Roles & Access', icon: Users },
-    { path: '/admin/settings', label: 'Platform Diagnostics & System', icon: Settings },
   ];
 
   return (
