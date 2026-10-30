@@ -1,0 +1,1136 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EMPIRICAL_CRIME_DATA = void 0;
+exports.EMPIRICAL_CRIME_DATA = {
+    "districtProfiles": {
+        "YSR": {
+            "total": 7555,
+            "counts": {
+                "Burglary": 137,
+                "Other IPC Crimes": 1363,
+                "Molestation & Harassment": 161,
+                "Rape": 19,
+                "Other Crimes": 5188,
+                "Robbery": 5,
+                "Kidnapping (Others)": 5,
+                "Cheatings": 271,
+                "Murder": 55,
+                "Riots": 10,
+                "Dacoity": 3,
+                "Kidnapping (Women & Girls)": 11,
+                "Dowry Deaths": 4,
+                "Theft": 323
+            }
+        },
+        "SPS Nellore": {
+            "total": 7414,
+            "counts": {
+                "Other Crimes": 4342,
+                "Kidnapping (Women & Girls)": 17,
+                "Kidnapping (Others)": 18,
+                "Burglary": 274,
+                "Molestation & Harassment": 267,
+                "Murder": 61,
+                "Rape": 32,
+                "Other IPC Crimes": 1481,
+                "Theft": 542,
+                "Cheatings": 343,
+                "Robbery": 14,
+                "Dowry Deaths": 4,
+                "Dacoity": 7,
+                "Riots": 12
+            }
+        },
+        "Prakasam": {
+            "total": 9104,
+            "counts": {
+                "Molestation & Harassment": 299,
+                "Murder": 54,
+                "Dowry Deaths": 3,
+                "Other IPC Crimes": 696,
+                "Dacoity": 3,
+                "Riots": 28,
+                "Kidnapping (Women & Girls)": 10,
+                "Theft": 510,
+                "Rape": 27,
+                "Burglary": 200,
+                "Kidnapping (Others)": 15,
+                "Cheatings": 428,
+                "Robbery": 8,
+                "Other Crimes": 6823
+            }
+        },
+        "Eluru": {
+            "total": 5583,
+            "counts": {
+                "Theft": 395,
+                "Robbery": 5,
+                "Cheatings": 293,
+                "Dowry Deaths": 5,
+                "Dacoity": 2,
+                "Riots": 2,
+                "Kidnapping (Women & Girls)": 33,
+                "Other Crimes": 3433,
+                "Kidnapping (Others)": 2,
+                "Burglary": 139,
+                "Murder": 23,
+                "Rape": 17,
+                "Molestation & Harassment": 241,
+                "Other IPC Crimes": 993
+            }
+        },
+        "NTR": {
+            "total": 11519,
+            "counts": {
+                "Kidnapping (Others)": 6,
+                "Other Crimes": 8916,
+                "Burglary": 199,
+                "Dacoity": 1,
+                "Riots": 2,
+                "Kidnapping (Women & Girls)": 39,
+                "Theft": 1090,
+                "Cheatings": 539,
+                "Murder": 43,
+                "Robbery": 26,
+                "Dowry Deaths": 3,
+                "Other IPC Crimes": 213,
+                "Molestation & Harassment": 383,
+                "Rape": 59
+            }
+        },
+        "Vizianagaram": {
+            "total": 5610,
+            "counts": {
+                "Kidnapping (Women & Girls)": 24,
+                "Kidnapping (Others)": 33,
+                "Riots": 3,
+                "Dowry Deaths": 3,
+                "Burglary": 133,
+                "Theft": 329,
+                "Other IPC Crimes": 475,
+                "Dacoity": 1,
+                "Rape": 43,
+                "Molestation & Harassment": 176,
+                "Murder": 23,
+                "Cheatings": 166,
+                "Robbery": 7,
+                "Other Crimes": 4194
+            }
+        },
+        "Parvathipuram Manyam": {
+            "total": 1656,
+            "counts": {
+                "Murder": 4,
+                "Dowry Deaths": 2,
+                "Riots": 2,
+                "Molestation & Harassment": 43,
+                "Cheatings": 35,
+                "Robbery": 2,
+                "Other Crimes": 789,
+                "Other IPC Crimes": 680,
+                "Rape": 11,
+                "Burglary": 31,
+                "Kidnapping (Women & Girls)": 11,
+                "Dacoity": 1,
+                "Theft": 45
+            }
+        },
+        "Kurnool": {
+            "total": 8832,
+            "counts": {
+                "Dacoity": 3,
+                "Molestation & Harassment": 245,
+                "Other IPC Crimes": 603,
+                "Dowry Deaths": 4,
+                "Burglary": 218,
+                "Theft": 348,
+                "Riots": 30,
+                "Kidnapping (Women & Girls)": 52,
+                "Other Crimes": 6751,
+                "Kidnapping (Others)": 15,
+                "Robbery": 13,
+                "Rape": 29,
+                "Murder": 57,
+                "Cheatings": 464
+            }
+        },
+        "Ananthapuramu": {
+            "total": 8760,
+            "counts": {
+                "Kidnapping (Others)": 11,
+                "Burglary": 215,
+                "Rape": 45,
+                "Other IPC Crimes": 489,
+                "Other Crimes": 6603,
+                "Kidnapping (Women & Girls)": 31,
+                "Robbery": 9,
+                "Riots": 24,
+                "Dacoity": 4,
+                "Dowry Deaths": 6,
+                "Cheatings": 537,
+                "Murder": 68,
+                "Theft": 455,
+                "Molestation & Harassment": 263
+            }
+        },
+        "Tirupathi": {
+            "total": 6246,
+            "counts": {
+                "Burglary": 211,
+                "Cheatings": 442,
+                "Other IPC Crimes": 1963,
+                "Robbery": 15,
+                "Theft": 693,
+                "Murder": 40,
+                "Kidnapping (Others)": 8,
+                "Dacoity": 6,
+                "Riots": 25,
+                "Kidnapping (Women & Girls)": 12,
+                "Other Crimes": 2631,
+                "Molestation & Harassment": 176,
+                "Dowry Deaths": 4,
+                "Rape": 20
+            }
+        },
+        "East Godavari": {
+            "total": 7415,
+            "counts": {
+                "Kidnapping (Others)": 21,
+                "Other Crimes": 5236,
+                "Dacoity": 4,
+                "Riots": 16,
+                "Kidnapping (Women & Girls)": 27,
+                "Molestation & Harassment": 282,
+                "Theft": 808,
+                "Robbery": 23,
+                "Cheatings": 330,
+                "Murder": 37,
+                "Dowry Deaths": 6,
+                "Other IPC Crimes": 345,
+                "Rape": 55,
+                "Burglary": 225
+            }
+        },
+        "Visakhapatnam": {
+            "total": 9746,
+            "counts": {
+                "Dacoity": 5,
+                "Rape": 104,
+                "Other IPC Crimes": 830,
+                "Burglary": 223,
+                "Kidnapping (Others)": 15,
+                "Robbery": 16,
+                "Molestation & Harassment": 404,
+                "Cheatings": 641,
+                "Murder": 47,
+                "Riots": 11,
+                "Other Crimes": 6750,
+                "Kidnapping (Women & Girls)": 24,
+                "Theft": 670,
+                "Dowry Deaths": 6
+            }
+        },
+        "Annamayya": {
+            "total": 2676,
+            "counts": {
+                "Rape": 6,
+                "Other Crimes": 1892,
+                "Kidnapping (Others)": 5,
+                "Burglary": 69,
+                "Other IPC Crimes": 311,
+                "Dowry Deaths": 3,
+                "Molestation & Harassment": 69,
+                "Theft": 162,
+                "Cheatings": 113,
+                "Murder": 27,
+                "Kidnapping (Women & Girls)": 3,
+                "Riots": 10,
+                "Robbery": 5,
+                "Dacoity": 1
+            }
+        },
+        "Guntakal Railway": {
+            "total": 531,
+            "counts": {
+                "Other Crimes": 28,
+                "Dacoity": 1,
+                "Murder": 3,
+                "Kidnapping (Others)": 1,
+                "Robbery": 5,
+                "Theft": 476,
+                "Cheatings": 4,
+                "Dowry Deaths": 2,
+                "Other IPC Crimes": 10,
+                "Molestation & Harassment": 1
+            }
+        },
+        "Anakapalli": {
+            "total": 3438,
+            "counts": {
+                "Other Crimes": 2647,
+                "Kidnapping (Women & Girls)": 12,
+                "Riots": 2,
+                "Dacoity": 1,
+                "Robbery": 5,
+                "Kidnapping (Others)": 4,
+                "Molestation & Harassment": 141,
+                "Murder": 13,
+                "Cheatings": 92,
+                "Other IPC Crimes": 221,
+                "Rape": 20,
+                "Burglary": 92,
+                "Theft": 185,
+                "Dowry Deaths": 3
+            }
+        },
+        "Srikakulam": {
+            "total": 6289,
+            "counts": {
+                "Riots": 11,
+                "Kidnapping (Women & Girls)": 11,
+                "Other Crimes": 5343,
+                "Cheatings": 164,
+                "Robbery": 5,
+                "Molestation & Harassment": 174,
+                "Dowry Deaths": 4,
+                "Other IPC Crimes": 257,
+                "Rape": 32,
+                "Dacoity": 2,
+                "Kidnapping (Others)": 2,
+                "Burglary": 101,
+                "Theft": 158,
+                "Murder": 25
+            }
+        },
+        "Kakinada": {
+            "total": 3232,
+            "counts": {
+                "Robbery": 5,
+                "Theft": 411,
+                "Cheatings": 98,
+                "Dowry Deaths": 2,
+                "Rape": 9,
+                "Other IPC Crimes": 157,
+                "Molestation & Harassment": 76,
+                "Burglary": 81,
+                "Kidnapping (Women & Girls)": 15,
+                "Other Crimes": 2352,
+                "Murder": 19,
+                "Kidnapping (Others)": 5,
+                "Riots": 2
+            }
+        },
+        "Bapatla": {
+            "total": 3760,
+            "counts": {
+                "Dacoity": 3,
+                "Rape": 13,
+                "Kidnapping (Others)": 7,
+                "Burglary": 92,
+                "Other Crimes": 2693,
+                "Cheatings": 137,
+                "Other IPC Crimes": 366,
+                "Robbery": 7,
+                "Dowry Deaths": 2,
+                "Riots": 8,
+                "Molestation & Harassment": 139,
+                "Murder": 39,
+                "Kidnapping (Women & Girls)": 2,
+                "Theft": 252
+            }
+        },
+        "Nandyal": {
+            "total": 3183,
+            "counts": {
+                "Robbery": 7,
+                "Cheatings": 329,
+                "Theft": 168,
+                "Other IPC Crimes": 233,
+                "Dowry Deaths": 2,
+                "Rape": 5,
+                "Burglary": 71,
+                "Other Crimes": 2179,
+                "Molestation & Harassment": 124,
+                "Kidnapping (Women & Girls)": 18,
+                "Dacoity": 2,
+                "Riots": 8,
+                "Murder": 26,
+                "Kidnapping (Others)": 11
+            }
+        },
+        "Rajamahendravaram": {
+            "total": 1758,
+            "counts": {
+                "Dowry Deaths": 1,
+                "Murder": 9,
+                "Riots": 1,
+                "Dacoity": 1,
+                "Other Crimes": 1203,
+                "Robbery": 10,
+                "Cheatings": 74,
+                "Other IPC Crimes": 112,
+                "Molestation & Harassment": 43,
+                "Rape": 20,
+                "Burglary": 53,
+                "Kidnapping (Others)": 1,
+                "Theft": 221,
+                "Kidnapping (Women & Girls)": 9
+            }
+        },
+        "Dr.B.R.Ambedkar Konaseema": {
+            "total": 3500,
+            "counts": {
+                "Burglary": 88,
+                "Other Crimes": 2634,
+                "Rape": 15,
+                "Cheatings": 144,
+                "Kidnapping (Others)": 6,
+                "Dacoity": 2,
+                "Murder": 14,
+                "Kidnapping (Women & Girls)": 24,
+                "Riots": 2,
+                "Robbery": 6,
+                "Dowry Deaths": 3,
+                "Molestation & Harassment": 194,
+                "Theft": 260,
+                "Other IPC Crimes": 108
+            }
+        },
+        "Krishna": {
+            "total": 8363,
+            "counts": {
+                "Other Crimes": 6011,
+                "Kidnapping (Others)": 16,
+                "Murder": 36,
+                "Kidnapping (Women & Girls)": 93,
+                "Dacoity": 2,
+                "Riots": 11,
+                "Robbery": 6,
+                "Theft": 526,
+                "Dowry Deaths": 7,
+                "Cheatings": 329,
+                "Other IPC Crimes": 855,
+                "Burglary": 114,
+                "Rape": 37,
+                "Molestation & Harassment": 320
+            }
+        },
+        "Alluri Sitharama Raju": {
+            "total": 672,
+            "counts": {
+                "Riots": 3,
+                "Kidnapping (Others)": 2,
+                "Burglary": 17,
+                "Murder": 20,
+                "Rape": 14,
+                "Other Crimes": 400,
+                "Molestation & Harassment": 17,
+                "Other IPC Crimes": 146,
+                "Theft": 26,
+                "Cheatings": 21,
+                "Robbery": 2,
+                "Dacoity": 1,
+                "Dowry Deaths": 2,
+                "Kidnapping (Women & Girls)": 1
+            }
+        },
+        "Guntur": {
+            "total": 12427,
+            "counts": {
+                "Murder": 64,
+                "Other Crimes": 8775,
+                "Dowry Deaths": 6,
+                "Cheatings": 1088,
+                "Rape": 62,
+                "Molestation & Harassment": 431,
+                "Dacoity": 3,
+                "Other IPC Crimes": 383,
+                "Robbery": 27,
+                "Burglary": 258,
+                "Kidnapping (Others)": 19,
+                "Theft": 1212,
+                "Kidnapping (Women & Girls)": 57,
+                "Riots": 42
+            }
+        },
+        "Sri Sathya Sai": {
+            "total": 3355,
+            "counts": {
+                "Murder": 27,
+                "Dowry Deaths": 3,
+                "Other Crimes": 2546,
+                "Molestation & Harassment": 139,
+                "Rape": 5,
+                "Other IPC Crimes": 142,
+                "Dacoity": 1,
+                "Cheatings": 191,
+                "Robbery": 6,
+                "Burglary": 90,
+                "Kidnapping (Others)": 6,
+                "Theft": 181,
+                "Riots": 15,
+                "Kidnapping (Women & Girls)": 3
+            }
+        },
+        "Vijayawada Railway": {
+            "total": 878,
+            "counts": {
+                "Cheatings": 3,
+                "Other IPC Crimes": 4,
+                "Other Crimes": 41,
+                "Robbery": 3,
+                "Molestation & Harassment": 5,
+                "Rape": 1,
+                "Murder": 4,
+                "Kidnapping (Others)": 3,
+                "Theft": 813,
+                "Kidnapping (Women & Girls)": 1
+            }
+        },
+        "Palnadu": {
+            "total": 3073,
+            "counts": {
+                "Burglary": 79,
+                "Other Crimes": 2394,
+                "Kidnapping (Women & Girls)": 13,
+                "Kidnapping (Others)": 3,
+                "Riots": 13,
+                "Dowry Deaths": 2,
+                "Molestation & Harassment": 79,
+                "Murder": 28,
+                "Robbery": 3,
+                "Cheatings": 118,
+                "Theft": 233,
+                "Other IPC Crimes": 103,
+                "Rape": 5
+            }
+        },
+        "West Godavari": {
+            "total": 8817,
+            "counts": {
+                "Kidnapping (Women & Girls)": 12,
+                "Rape": 33,
+                "Dacoity": 3,
+                "Robbery": 9,
+                "Kidnapping (Others)": 3,
+                "Other Crimes": 5063,
+                "Murder": 29,
+                "Theft": 705,
+                "Cheatings": 339,
+                "Other IPC Crimes": 2077,
+                "Riots": 17,
+                "Molestation & Harassment": 266,
+                "Burglary": 254,
+                "Dowry Deaths": 7
+            }
+        },
+        "Chittoor": {
+            "total": 8670,
+            "counts": {
+                "Kidnapping (Women & Girls)": 13,
+                "Dowry Deaths": 9,
+                "Theft": 453,
+                "Molestation & Harassment": 150,
+                "Burglary": 156,
+                "Dacoity": 5,
+                "Other IPC Crimes": 2392,
+                "Rape": 11,
+                "Murder": 49,
+                "Kidnapping (Others)": 12,
+                "Riots": 33,
+                "Other Crimes": 5143,
+                "Cheatings": 240,
+                "Robbery": 4
+            }
+        }
+    },
+    "hourProfiles": {
+        "0": {
+            "total": 3359,
+            "counts": {
+                "Rape": 8,
+                "Burglary": 60,
+                "Theft": 280,
+                "Kidnapping (Others)": 8,
+                "Other Crimes": 2305,
+                "Robbery": 2,
+                "Cheatings": 177,
+                "Molestation & Harassment": 84,
+                "Other IPC Crimes": 391,
+                "Murder": 21,
+                "Dowry Deaths": 3,
+                "Riots": 10,
+                "Kidnapping (Women & Girls)": 10
+            }
+        },
+        "1": {
+            "total": 3471,
+            "counts": {
+                "Other IPC Crimes": 423,
+                "Cheatings": 146,
+                "Burglary": 79,
+                "Theft": 287,
+                "Molestation & Harassment": 109,
+                "Rape": 16,
+                "Dowry Deaths": 4,
+                "Kidnapping (Women & Girls)": 11,
+                "Other Crimes": 2369,
+                "Robbery": 4,
+                "Murder": 14,
+                "Kidnapping (Others)": 2,
+                "Riots": 7
+            }
+        },
+        "2": {
+            "total": 3377,
+            "counts": {
+                "Burglary": 72,
+                "Rape": 16,
+                "Other Crimes": 2290,
+                "Dacoity": 1,
+                "Cheatings": 168,
+                "Riots": 8,
+                "Kidnapping (Others)": 4,
+                "Murder": 19,
+                "Kidnapping (Women & Girls)": 6,
+                "Robbery": 6,
+                "Molestation & Harassment": 122,
+                "Theft": 256,
+                "Other IPC Crimes": 408,
+                "Dowry Deaths": 1
+            }
+        },
+        "3": {
+            "total": 3434,
+            "counts": {
+                "Burglary": 79,
+                "Other Crimes": 2427,
+                "Kidnapping (Others)": 2,
+                "Kidnapping (Women & Girls)": 9,
+                "Rape": 15,
+                "Riots": 13,
+                "Dacoity": 1,
+                "Murder": 25,
+                "Cheatings": 162,
+                "Theft": 239,
+                "Molestation & Harassment": 98,
+                "Robbery": 6,
+                "Other IPC Crimes": 354,
+                "Dowry Deaths": 4
+            }
+        },
+        "4": {
+            "total": 3408,
+            "counts": {
+                "Other IPC Crimes": 371,
+                "Molestation & Harassment": 123,
+                "Rape": 15,
+                "Kidnapping (Others)": 6,
+                "Cheatings": 133,
+                "Murder": 23,
+                "Riots": 7,
+                "Robbery": 5,
+                "Other Crimes": 2382,
+                "Kidnapping (Women & Girls)": 13,
+                "Burglary": 85,
+                "Dowry Deaths": 2,
+                "Theft": 243
+            }
+        },
+        "5": {
+            "total": 3431,
+            "counts": {
+                "Dowry Deaths": 3,
+                "Riots": 14,
+                "Molestation & Harassment": 123,
+                "Theft": 262,
+                "Kidnapping (Women & Girls)": 10,
+                "Cheatings": 159,
+                "Other Crimes": 2353,
+                "Dacoity": 1,
+                "Murder": 24,
+                "Robbery": 7,
+                "Rape": 22,
+                "Kidnapping (Others)": 5,
+                "Other IPC Crimes": 378,
+                "Burglary": 70
+            }
+        },
+        "6": {
+            "total": 3437,
+            "counts": {
+                "Dowry Deaths": 1,
+                "Murder": 15,
+                "Other Crimes": 2392,
+                "Burglary": 79,
+                "Molestation & Harassment": 128,
+                "Rape": 17,
+                "Other IPC Crimes": 377,
+                "Cheatings": 148,
+                "Robbery": 7,
+                "Kidnapping (Others)": 4,
+                "Theft": 247,
+                "Riots": 5,
+                "Dacoity": 1,
+                "Kidnapping (Women & Girls)": 16
+            }
+        },
+        "7": {
+            "total": 3398,
+            "counts": {
+                "Theft": 268,
+                "Cheatings": 164,
+                "Murder": 21,
+                "Robbery": 4,
+                "Dowry Deaths": 2,
+                "Other IPC Crimes": 392,
+                "Rape": 17,
+                "Molestation & Harassment": 111,
+                "Other Crimes": 2307,
+                "Burglary": 87,
+                "Kidnapping (Others)": 7,
+                "Dacoity": 1,
+                "Kidnapping (Women & Girls)": 12,
+                "Riots": 5
+            }
+        },
+        "8": {
+            "total": 3380,
+            "counts": {
+                "Murder": 16,
+                "Dowry Deaths": 1,
+                "Theft": 274,
+                "Riots": 6,
+                "Kidnapping (Women & Girls)": 10,
+                "Molestation & Harassment": 111,
+                "Dacoity": 2,
+                "Other Crimes": 2348,
+                "Kidnapping (Others)": 7,
+                "Cheatings": 137,
+                "Robbery": 6,
+                "Other IPC Crimes": 361,
+                "Rape": 16,
+                "Burglary": 85
+            }
+        },
+        "9": {
+            "total": 3384,
+            "counts": {
+                "Dacoity": 2,
+                "Theft": 288,
+                "Other IPC Crimes": 330,
+                "Molestation & Harassment": 98,
+                "Rape": 12,
+                "Riots": 5,
+                "Murder": 18,
+                "Cheatings": 166,
+                "Kidnapping (Others)": 1,
+                "Robbery": 7,
+                "Other Crimes": 2365,
+                "Kidnapping (Women & Girls)": 9,
+                "Burglary": 79,
+                "Dowry Deaths": 4
+            }
+        },
+        "10": {
+            "total": 3409,
+            "counts": {
+                "Theft": 257,
+                "Dacoity": 1,
+                "Other IPC Crimes": 400,
+                "Burglary": 81,
+                "Cheatings": 131,
+                "Robbery": 4,
+                "Riots": 6,
+                "Murder": 21,
+                "Kidnapping (Women & Girls)": 13,
+                "Kidnapping (Others)": 1,
+                "Other Crimes": 2384,
+                "Rape": 11,
+                "Molestation & Harassment": 99
+            }
+        },
+        "11": {
+            "total": 3478,
+            "counts": {
+                "Other IPC Crimes": 343,
+                "Burglary": 82,
+                "Cheatings": 177,
+                "Theft": 303,
+                "Dacoity": 1,
+                "Other Crimes": 2382,
+                "Robbery": 6,
+                "Molestation & Harassment": 113,
+                "Rape": 19,
+                "Riots": 12,
+                "Murder": 24,
+                "Dowry Deaths": 4,
+                "Kidnapping (Others)": 5,
+                "Kidnapping (Women & Girls)": 7
+            }
+        },
+        "12": {
+            "total": 3462,
+            "counts": {
+                "Murder": 24,
+                "Kidnapping (Women & Girls)": 18,
+                "Cheatings": 155,
+                "Dacoity": 4,
+                "Kidnapping (Others)": 3,
+                "Robbery": 7,
+                "Riots": 6,
+                "Other Crimes": 2381,
+                "Rape": 17,
+                "Molestation & Harassment": 113,
+                "Other IPC Crimes": 356,
+                "Theft": 274,
+                "Dowry Deaths": 2,
+                "Burglary": 102
+            }
+        },
+        "13": {
+            "total": 3442,
+            "counts": {
+                "Other Crimes": 2368,
+                "Burglary": 69,
+                "Kidnapping (Others)": 7,
+                "Kidnapping (Women & Girls)": 20,
+                "Riots": 3,
+                "Theft": 259,
+                "Cheatings": 177,
+                "Murder": 14,
+                "Dacoity": 4,
+                "Robbery": 4,
+                "Dowry Deaths": 2,
+                "Other IPC Crimes": 397,
+                "Rape": 11,
+                "Molestation & Harassment": 107
+            }
+        },
+        "14": {
+            "total": 3460,
+            "counts": {
+                "Rape": 22,
+                "Burglary": 69,
+                "Kidnapping (Others)": 5,
+                "Dacoity": 3,
+                "Robbery": 3,
+                "Other Crimes": 2423,
+                "Other IPC Crimes": 374,
+                "Cheatings": 160,
+                "Murder": 22,
+                "Molestation & Harassment": 105,
+                "Riots": 15,
+                "Dowry Deaths": 4,
+                "Kidnapping (Women & Girls)": 18,
+                "Theft": 237
+            }
+        },
+        "15": {
+            "total": 3425,
+            "counts": {
+                "Other Crimes": 2357,
+                "Kidnapping (Others)": 11,
+                "Burglary": 96,
+                "Murder": 28,
+                "Rape": 20,
+                "Other IPC Crimes": 354,
+                "Molestation & Harassment": 105,
+                "Theft": 260,
+                "Cheatings": 161,
+                "Robbery": 5,
+                "Dowry Deaths": 3,
+                "Dacoity": 1,
+                "Riots": 7,
+                "Kidnapping (Women & Girls)": 17
+            }
+        },
+        "16": {
+            "total": 3354,
+            "counts": {
+                "Murder": 23,
+                "Theft": 251,
+                "Robbery": 6,
+                "Cheatings": 158,
+                "Molestation & Harassment": 115,
+                "Other IPC Crimes": 377,
+                "Dacoity": 1,
+                "Rape": 13,
+                "Dowry Deaths": 2,
+                "Burglary": 66,
+                "Kidnapping (Women & Girls)": 13,
+                "Riots": 4,
+                "Other Crimes": 2322,
+                "Kidnapping (Others)": 3
+            }
+        },
+        "17": {
+            "total": 17205,
+            "counts": {
+                "Rape": 84,
+                "Kidnapping (Others)": 28,
+                "Theft": 1347,
+                "Other IPC Crimes": 1898,
+                "Burglary": 369,
+                "Dowry Deaths": 10,
+                "Riots": 34,
+                "Kidnapping (Women & Girls)": 62,
+                "Molestation & Harassment": 552,
+                "Cheatings": 805,
+                "Dacoity": 9,
+                "Other Crimes": 11882,
+                "Robbery": 21,
+                "Murder": 104
+            }
+        },
+        "18": {
+            "total": 17024,
+            "counts": {
+                "Kidnapping (Others)": 24,
+                "Murder": 93,
+                "Riots": 41,
+                "Robbery": 32,
+                "Other Crimes": 11668,
+                "Cheatings": 884,
+                "Molestation & Harassment": 558,
+                "Dowry Deaths": 7,
+                "Theft": 1308,
+                "Rape": 73,
+                "Dacoity": 5,
+                "Other IPC Crimes": 1858,
+                "Kidnapping (Women & Girls)": 58,
+                "Burglary": 415
+            }
+        },
+        "19": {
+            "total": 17257,
+            "counts": {
+                "Kidnapping (Others)": 30,
+                "Other Crimes": 11820,
+                "Rape": 74,
+                "Other IPC Crimes": 1918,
+                "Dowry Deaths": 10,
+                "Theft": 1361,
+                "Burglary": 405,
+                "Robbery": 36,
+                "Molestation & Harassment": 572,
+                "Kidnapping (Women & Girls)": 63,
+                "Dacoity": 3,
+                "Cheatings": 833,
+                "Murder": 97,
+                "Riots": 35
+            }
+        },
+        "20": {
+            "total": 16938,
+            "counts": {
+                "Robbery": 27,
+                "Dowry Deaths": 11,
+                "Murder": 91,
+                "Cheatings": 877,
+                "Theft": 1253,
+                "Riots": 38,
+                "Dacoity": 6,
+                "Kidnapping (Women & Girls)": 46,
+                "Kidnapping (Others)": 31,
+                "Rape": 80,
+                "Burglary": 384,
+                "Other Crimes": 11704,
+                "Molestation & Harassment": 539,
+                "Other IPC Crimes": 1851
+            }
+        },
+        "21": {
+            "total": 17270,
+            "counts": {
+                "Kidnapping (Others)": 32,
+                "Dacoity": 12,
+                "Burglary": 412,
+                "Robbery": 19,
+                "Theft": 1321,
+                "Kidnapping (Women & Girls)": 63,
+                "Murder": 98,
+                "Riots": 31,
+                "Other Crimes": 11856,
+                "Dowry Deaths": 9,
+                "Molestation & Harassment": 552,
+                "Other IPC Crimes": 1875,
+                "Cheatings": 905,
+                "Rape": 85
+            }
+        },
+        "22": {
+            "total": 16879,
+            "counts": {
+                "Kidnapping (Others)": 25,
+                "Burglary": 408,
+                "Rape": 73,
+                "Dacoity": 7,
+                "Kidnapping (Women & Girls)": 58,
+                "Other Crimes": 11598,
+                "Robbery": 24,
+                "Riots": 27,
+                "Dowry Deaths": 16,
+                "Murder": 88,
+                "Cheatings": 819,
+                "Theft": 1315,
+                "Other IPC Crimes": 1856,
+                "Molestation & Harassment": 565
+            }
+        },
+        "23": {
+            "total": 3380,
+            "counts": {
+                "Kidnapping (Others)": 4,
+                "Burglary": 87,
+                "Kidnapping (Women & Girls)": 16,
+                "Dacoity": 2,
+                "Rape": 13,
+                "Theft": 260,
+                "Dowry Deaths": 3,
+                "Riots": 4,
+                "Molestation & Harassment": 106,
+                "Other IPC Crimes": 366,
+                "Murder": 21,
+                "Cheatings": 171,
+                "Robbery": 10,
+                "Other Crimes": 2317
+            }
+        }
+    },
+    "dayProfiles": {
+        "0": {
+            "total": 23532,
+            "counts": {
+                "Dacoity": 10,
+                "Other Crimes": 16187,
+                "Rape": 99,
+                "Burglary": 615,
+                "Cheatings": 1194,
+                "Robbery": 32,
+                "Dowry Deaths": 19,
+                "Molestation & Harassment": 761,
+                "Murder": 138,
+                "Theft": 1787,
+                "Kidnapping (Women & Girls)": 76,
+                "Riots": 44,
+                "Other IPC Crimes": 2539,
+                "Kidnapping (Others)": 31
+            }
+        },
+        "1": {
+            "total": 23356,
+            "counts": {
+                "Cheatings": 1153,
+                "Molestation & Harassment": 728,
+                "Other IPC Crimes": 2511,
+                "Theft": 1804,
+                "Burglary": 555,
+                "Kidnapping (Women & Girls)": 89,
+                "Murder": 142,
+                "Dowry Deaths": 14,
+                "Robbery": 46,
+                "Kidnapping (Others)": 42,
+                "Rape": 94,
+                "Riots": 53,
+                "Dacoity": 12,
+                "Other Crimes": 16113
+            }
+        },
+        "2": {
+            "total": 23521,
+            "counts": {
+                "Theft": 1838,
+                "Other IPC Crimes": 2622,
+                "Burglary": 510,
+                "Murder": 121,
+                "Cheatings": 1107,
+                "Dacoity": 9,
+                "Kidnapping (Women & Girls)": 89,
+                "Dowry Deaths": 13,
+                "Riots": 58,
+                "Rape": 103,
+                "Molestation & Harassment": 753,
+                "Other Crimes": 16227,
+                "Kidnapping (Others)": 41,
+                "Robbery": 30
+            }
+        },
+        "3": {
+            "total": 23376,
+            "counts": {
+                "Burglary": 534,
+                "Theft": 1836,
+                "Other Crimes": 16014,
+                "Kidnapping (Others)": 39,
+                "Robbery": 37,
+                "Molestation & Harassment": 776,
+                "Kidnapping (Women & Girls)": 89,
+                "Dowry Deaths": 13,
+                "Riots": 58,
+                "Rape": 96,
+                "Murder": 138,
+                "Dacoity": 13,
+                "Other IPC Crimes": 2581,
+                "Cheatings": 1152
+            }
+        },
+        "4": {
+            "total": 23550,
+            "counts": {
+                "Robbery": 42,
+                "Other IPC Crimes": 2600,
+                "Kidnapping (Women & Girls)": 62,
+                "Other Crimes": 16195,
+                "Burglary": 547,
+                "Dowry Deaths": 16,
+                "Kidnapping (Others)": 31,
+                "Molestation & Harassment": 740,
+                "Cheatings": 1163,
+                "Murder": 126,
+                "Rape": 129,
+                "Riots": 45,
+                "Dacoity": 9,
+                "Theft": 1845
+            }
+        },
+        "5": {
+            "total": 23402,
+            "counts": {
+                "Kidnapping (Women & Girls)": 84,
+                "Rape": 118,
+                "Cheatings": 1096,
+                "Dowry Deaths": 20,
+                "Molestation & Harassment": 764,
+                "Riots": 48,
+                "Kidnapping (Others)": 40,
+                "Other Crimes": 16066,
+                "Other IPC Crimes": 2616,
+                "Burglary": 542,
+                "Theft": 1828,
+                "Dacoity": 5,
+                "Robbery": 36,
+                "Murder": 139
+            }
+        },
+        "6": {
+            "total": 23325,
+            "counts": {
+                "Kidnapping (Others)": 31,
+                "Dowry Deaths": 13,
+                "Burglary": 517,
+                "Other IPC Crimes": 2539,
+                "Theft": 1712,
+                "Kidnapping (Women & Girls)": 89,
+                "Murder": 140,
+                "Molestation & Harassment": 786,
+                "Cheatings": 1108,
+                "Dacoity": 10,
+                "Robbery": 35,
+                "Riots": 37,
+                "Rape": 110,
+                "Other Crimes": 16198
+            }
+        }
+    }
+};
