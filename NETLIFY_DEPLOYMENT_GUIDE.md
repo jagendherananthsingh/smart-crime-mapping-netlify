@@ -70,3 +70,4 @@ npm install -g netlify-cli
 ntl dev
 ```
 Netlify Dev will boot both the Vite frontend server and Netlify Functions proxy together on `http://localhost:8888`.
+

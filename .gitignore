@@ -47,7 +47,8 @@ Thumbs.db
 .cache
 .turbo
 
-# Temporary runtime data
+# Temporary runtime data & local test scripts
 data/db
 uploads
 tmp
+scratch/
